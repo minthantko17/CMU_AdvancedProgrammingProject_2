@@ -3,23 +3,31 @@ package se233.advprogrammingproject2.model;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
-import javafx.scene.layout.Pane;
 import se233.advprogrammingproject2.Controllers.GameController;
+import se233.advprogrammingproject2.Launcher;
 import se233.advprogrammingproject2.View.GameStage;
 
-public class PlayerShip {
-    GameStage gameStage;
-    ImageView imageView;
-    double x;
-    double y;
+public class PlayerShip extends Characters {
+    double currX;
+    double currY;
     KeyCode topKey, rightKey, bottomKey, leftKey;
     boolean isMoveTop, isMoveRight, isMoveBottom, isMoveLeft;
+    private boolean isDestroyed;
+    private int life = 3;
+    private boolean isInvincible;
+    private long invincibleStartTime;
+    private long invincibleDuration = 3000;
 
 
-    public PlayerShip(GameStage gameStage, Image image, double x, double y, KeyCode topKey, KeyCode rightKey, KeyCode bottomKey, KeyCode leftKey) {
+    public PlayerShip(GameStage gameStage, Image image, double startX, double startY, KeyCode topKey, KeyCode rightKey, KeyCode bottomKey, KeyCode leftKey, double speed) {
         this.gameStage=gameStage;
-        this.x=x;
-        this.y=y;
+        this.startX=startX;
+        this.startY=startY;
+
+        this.currX= this.startX;
+        this.currY = this.startY;
+        this.speed=speed;
+
         this.topKey=topKey;
         this.rightKey=rightKey;
         this.bottomKey=bottomKey;
@@ -28,21 +36,30 @@ public class PlayerShip {
 
         imageView.setPreserveRatio(true);
         imageView.setFitWidth(50);
-        imageView.setX(x);
-        imageView.setY(y);
+        imageView.setX(this.startX);
+        imageView.setY(this.startY);
 
+        isDestroyed=false;
+        isInvincible=false;
 
     }
 
     public void update(){
+        if (isInvincible()) {
+            long elapsedTime = System.currentTimeMillis() - invincibleStartTime;
+            imageView.setVisible(elapsedTime / 200 % 2 != 0);
+        } else {
+            imageView.setVisible(true);
+        }
+
+        if(isDestroyed){
+            return;
+        }
+
         boolean leftPressed= gameStage.getKeys().isPressed(this.leftKey);
         boolean rightPressed= gameStage.getKeys().isPressed(this.rightKey);
         boolean topPressed= gameStage.getKeys().isPressed(this.topKey);
         boolean bottomPressed= gameStage.getKeys().isPressed(this.bottomKey);
-//        System.out.println(topPressed);
-//        System.out.println(rightPressed);
-//        System.out.println(bottomPressed);
-//        System.out.println(leftPressed);
 
         if(leftPressed && rightPressed){
             this.stopHorizontal();
@@ -103,29 +120,79 @@ public class PlayerShip {
 
     public void moveHorizontal(){
         if(isMoveLeft){
-            x=x-5;
+            currX=currX-speed;
         }
         if(isMoveRight){
-            x=x+5;
+            currX=currX+speed;
         }
-        imageView.setX(x);
+        imageView.setX(currX);
     }
-
     public void moveVertical(){
         if(isMoveTop){
-            y=y-5;
+            currY = currY -speed;
         }
         if(isMoveBottom){
-            y=y+5;
+            currY = currY +speed;
         }
-        imageView.setY(y);
+        imageView.setY(currY);
+    }
+
+    public Bullet shootBullet(){
+        double shipX=this.getImageView().getBoundsInParent().getMinX()+this.getImageView().getBoundsInParent().getWidth() /2;
+        double shipY=this.getImageView().getBoundsInParent().getMinY()+this.getImageView().getBoundsInParent().getWidth() /2;
+        double shipDirection=this.getImageView().getRotate()-90;     // adjust like +- 90 according to the input image
+
+//        double shipHeight = this.getImageView().getBoundsInParent().getHeight() / 2; // or another suitable value
+//        double shipLength = this.getImageView().getBoundsInParent().getWidth() / 2; // or another suitable value
+//
+//        // Use trigonometry to calculate the position of the bullet at the front of the ship
+//        double bulletX = shipX + Math.cos(Math.toRadians(shipDirection)) * shipLength;
+//        double bulletY = shipY + Math.sin(Math.toRadians(shipDirection)) * shipHeight;
+
+        Image bulletImage=new Image(Launcher.class.getResourceAsStream("assets/laserRed.png"));
+        double bulletSpeed=15;
+        Bullet bullet=new Bullet(this, bulletImage, shipX, shipY, shipDirection, bulletSpeed);
+        return bullet;
+    }
+
+    public boolean isDestroyed(){
+        return isDestroyed;
+    }
+
+    public void destroy(){
+        isDestroyed=true;
+    }
+
+    public void respawn(){
+        life--;
+        isDestroyed=false;
+        invincibleStartTime=System.currentTimeMillis();
+        isInvincible=true;
+        this.currX=startX;
+        this.currY =startY;
+        imageView.setX(startX);
+        imageView.setY(startY);
+    }
+
+    public int getLife(){
+        return life;
+    }
+
+    public boolean isInvincible(){
+        return isInvincible && (System.currentTimeMillis()-invincibleStartTime<invincibleDuration);
+    }
+
+    public double getCurrX(){
+        return this.currX;
+    }
+    public double getCurrY(){
+        return this.currY;
     }
 
 
+    //score
 
-    public ImageView getImageView(){
-        return this.imageView;
-    }
+    //game finish
 
 
 }

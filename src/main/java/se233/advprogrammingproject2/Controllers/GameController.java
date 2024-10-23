@@ -32,7 +32,7 @@ public class GameController {
     private void addEventListeners(){
         //change ship direction according to cursor
         gameStage.setOnMouseMoved(e->{
-            System.out.println("mousemoved");
+//            System.out.println("mousemoved");
             //ImageView center
             double centerX = playerShip.getImageView().getBoundsInParent().getMinX()+playerShip.getImageView().getBoundsInParent().getWidth() /2;
             double centerY = playerShip.getImageView().getBoundsInParent().getMinY()+playerShip.getImageView().getBoundsInParent().getWidth() /2;
@@ -54,9 +54,10 @@ public class GameController {
 
     private void setUpKeyEvents(){
         scene.setOnKeyPressed(e->{
-            if(e.getCode()== KeyCode.SPACE){
+            if(e.getCode()== KeyCode.SPACE && !playerShip.isDestroyed()){
                 System.out.println("keyPressed");
-                shootBullet();
+                Bullet bullet = playerShip.shootBullet();
+                gameLoop.addBullet(bullet);
             }else {
                 gameStage.getKeys().add(e.getCode());
             }
@@ -65,23 +66,11 @@ public class GameController {
         scene.setOnKeyReleased(event -> gameStage.getKeys().remove(event.getCode()));
 
         scene.setOnMousePressed(e->{
-            if(e.getButton()== MouseButton.SECONDARY){
+            if(e.getButton()== MouseButton.SECONDARY && !playerShip.isDestroyed()){
                 System.out.println("mousePressed");
-                shootBullet();
+                Bullet bullet = playerShip.shootBullet();
+                gameLoop.addBullet(bullet);
             }
         });
-
-
-    }
-
-    private void shootBullet(){
-        double shipX=playerShip.getImageView().getBoundsInParent().getMinX()+playerShip.getImageView().getBoundsInParent().getWidth() /2;
-        double shipY=playerShip.getImageView().getBoundsInParent().getMinY()+playerShip.getImageView().getBoundsInParent().getWidth() /2;
-        double shipDirection=playerShip.getImageView().getRotate()-90;     // adjust like +- 90 according to the input image
-
-        Image bulletImage=new Image(Launcher.class.getResourceAsStream("assets/laserRed.png"));
-        double bulletSpeed=7;
-        Bullet bullet=new Bullet(playerShip, bulletImage, shipX, shipY, shipDirection, bulletSpeed);
-        gameLoop.addBullet(bullet);
     }
 }

@@ -1,0 +1,100 @@
+package se233.advprogrammingproject2.model;
+
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import se233.advprogrammingproject2.Launcher;
+import se233.advprogrammingproject2.View.GameStage;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class Asteroids extends Characters{
+    private double rotationSpeed;
+    private int size;
+
+    public Asteroids(GameStage gameStage,Image image, double startX, double startY, double speed, int directionAngle, double rotationSpeed, int size) {
+        super(new ImageView(image), startX, startY, speed, directionAngle);
+        this.gameStage=gameStage;
+        this.size=size;
+        this.imageView.setX(startX);
+        this.imageView.setY(startY);
+        this.imageView.setFitWidth(size);
+        this.imageView.setPreserveRatio(true);
+        this.rotationSpeed = rotationSpeed;
+    }
+
+    @Override
+    public void update() {
+        updateWhenOffScreen();
+        super.update();
+        this.imageView.setRotate(imageView.getRotate()+this.rotationSpeed);
+    }
+
+    public boolean isOffScreen(){
+        return (imageView.getX()<0 || imageView.getX()> Launcher.WIDTH || imageView.getY()<0 || imageView.getY()> Launcher.HEIGHT);
+    }
+
+    public void updateWhenOffScreen(){
+        if(imageView.getX()<0){
+            imageView.setX(Launcher.WIDTH);
+        }
+        if(imageView.getX()>Launcher.WIDTH){
+            imageView.setX(0);
+        }
+        if(imageView.getY()<0){
+            imageView.setY(Launcher.HEIGHT);
+        }
+        if(imageView.getY()>Launcher.HEIGHT){
+            imageView.setY(0);
+        }
+    }
+
+//    @Override
+//    public void explode(){
+//        System.out.println("Exploded");
+//        for (int i = 0; i < 4; i++) {
+//            // Create smaller asteroid with a fraction of the original size
+//            Asteroids smallerAsteroid = new Asteroids(gameStage,
+//                    new Image(Launcher.class.getResourceAsStream("assets/asteroid2.png")),
+//                    this.imageView.getX(), // Start at the same position
+//                    this.imageView.getY(), // Start at the same position
+//                    2,
+//                    (int)(Math.random()*361),
+//                    2,
+//                    60
+//            );
+//
+//            // Add the smaller asteroid to the game stage
+//            gameStage.getChildren().add(smallerAsteroid.getImageView());
+//            // Add to the list of asteroids for collision detection
+////            gameLoop.getAsteroids().add(smallerAsteroid);
+//        }
+////        gameStage.getChildren().remove(this.imageView);
+//    }
+
+    public List<Asteroids> spawnSmaller(double startX, double startY, int size){
+        List<Asteroids> smallerAsteroids=new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            Asteroids smallerAsteroid = new Asteroids(gameStage,
+                    new Image(Launcher.class.getResourceAsStream("assets/asteroid2.png")),
+                    startX,
+                    startY,
+                    2,
+                    (int) (Math.random() * 361),
+                    1 + Math.random() * 2,
+                    size
+            );
+            smallerAsteroids.add(smallerAsteroid);
+            gameStage.getChildren().add(smallerAsteroid.getImageView());
+        }
+        return smallerAsteroids;
+    }
+
+    public double getRotationSpeed() {
+        return rotationSpeed;
+    }
+
+    public int getSize(){
+        return size;
+    }
+}

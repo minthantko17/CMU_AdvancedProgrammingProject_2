@@ -4,7 +4,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import se233.advprogrammingproject2.Launcher;
 
-public class Bullet{
+public class Bullet extends Characters{
     private PlayerShip playerShip;
     private final ImageView imageView;
     private final double directionAngle;

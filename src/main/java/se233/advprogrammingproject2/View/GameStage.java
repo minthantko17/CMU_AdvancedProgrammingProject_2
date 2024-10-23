@@ -19,7 +19,7 @@ public class GameStage extends Pane {
     public void setUpGame(){
         keys=new Keys();
         playerShipImg=new Image(Launcher.class.getResourceAsStream("assets/playerShip1_red.png"));
-        playerShip=new PlayerShip( this, playerShipImg, 200, 200, KeyCode.W, KeyCode.D, KeyCode.S, KeyCode.A);
+        playerShip=new PlayerShip( this, playerShipImg, Launcher.WIDTH/2 -25, Launcher.HEIGHT/2 -20, KeyCode.W, KeyCode.D, KeyCode.S, KeyCode.A, 5);
 
         this.getChildren().addAll(playerShip.getImageView());
         this.setFocusTraversable(true); // Ensure the pane can capture key events
