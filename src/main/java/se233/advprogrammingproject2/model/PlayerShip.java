@@ -141,6 +141,7 @@ public class PlayerShip extends Characters {
         double shipX=this.getImageView().getBoundsInParent().getMinX()+this.getImageView().getBoundsInParent().getWidth() /2;
         double shipY=this.getImageView().getBoundsInParent().getMinY()+this.getImageView().getBoundsInParent().getWidth() /2;
         double shipDirection=this.getImageView().getRotate()-90;     // adjust like +- 90 according to the input image
+        double shipLastDirectedAngle= this.getImageView().getRotate();
 
 //        double shipHeight = this.getImageView().getBoundsInParent().getHeight() / 2; // or another suitable value
 //        double shipLength = this.getImageView().getBoundsInParent().getWidth() / 2; // or another suitable value
@@ -151,7 +152,7 @@ public class PlayerShip extends Characters {
 
         Image bulletImage=new Image(Launcher.class.getResourceAsStream("assets/laserRed.png"));
         double bulletSpeed=15;
-        Bullet bullet=new Bullet(this, bulletImage, shipX, shipY, shipDirection, bulletSpeed);
+        Bullet bullet=new Bullet(this, bulletImage, shipX, shipY, shipDirection, shipLastDirectedAngle, bulletSpeed);
         return bullet;
     }
 

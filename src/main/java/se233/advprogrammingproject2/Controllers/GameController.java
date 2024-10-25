@@ -1,14 +1,12 @@
 package se233.advprogrammingproject2.Controllers;
 
 import javafx.scene.Scene;
-import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import se233.advprogrammingproject2.model.Bullet;
 import se233.advprogrammingproject2.model.PlayerShip;
-import se233.advprogrammingproject2.Launcher;
 import se233.advprogrammingproject2.View.GameStage;
 
 public class GameController {
@@ -57,7 +55,7 @@ public class GameController {
             if(e.getCode()== KeyCode.SPACE && !playerShip.isDestroyed()){
                 System.out.println("keyPressed");
                 Bullet bullet = playerShip.shootBullet();
-                gameLoop.addBullet(bullet);
+                gameLoop.addPlayerBullet(bullet);
             }else {
                 gameStage.getKeys().add(e.getCode());
             }
@@ -69,7 +67,7 @@ public class GameController {
             if(e.getButton()== MouseButton.SECONDARY && !playerShip.isDestroyed()){
                 System.out.println("mousePressed");
                 Bullet bullet = playerShip.shootBullet();
-                gameLoop.addBullet(bullet);
+                gameLoop.addPlayerBullet(bullet);
             }
         });
     }

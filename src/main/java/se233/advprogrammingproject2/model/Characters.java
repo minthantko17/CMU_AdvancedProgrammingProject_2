@@ -4,7 +4,7 @@ import javafx.scene.image.ImageView;
 import se233.advprogrammingproject2.Launcher;
 import se233.advprogrammingproject2.View.GameStage;
 
-abstract class Characters extends ImageView {
+public abstract class Characters extends ImageView {
     protected double startX;
     protected double startY;
     protected int hp=1;
