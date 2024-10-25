@@ -37,39 +37,60 @@ public class GameLoop extends AnimationTimer {
 
     @Override
     public void handle(long now) {
-        updateAndCollidePlayerBullet();
+        if(!Launcher.isGameOver && !Launcher.isVictory){
+            gameStage.updateScoreLabel(GameStage.score);
+            gameStage.updatePlayerLifeLabel(playerShip.getLife());
 
-        for (Asteroids asteroid : asteroids) {
-            asteroid.update();
-        }
+            updateAndCollidePlayerBullet();
 
-        for (EnemyShips e: enemyShips){
-            e.update();
-        }
+            for (Asteroids asteroid : asteroids) {
+                asteroid.update();
+            }
 
-        //update ship movements
-        updateAndCollidePlayerShip();
+            for (EnemyShips e: enemyShips){
+                e.update();
+            }
 
-        if(asteroids.isEmpty()){
-            spawnAsteroids(120);
-        }
+            updateAndCollidePlayerShip();
 
-        if(enemyShips.isEmpty()){
-            enemyShipType=1;
-            spawnEnemyShips(enemyShipType);
-        }
+            //Spawn asteroids again and again
+//            if(asteroids.isEmpty()){
+//                spawnAsteroids(120);
+//            }
 
-        if(enemyShipType==1 && !enemyShips.isEmpty()){
-            for(EnemyShips e: enemyShips){
-                if(e instanceof largeEnemyShip){
-                    if(((largeEnemyShip) e).canEnemyShoot(now/1000000, 3000)){
-                        addAndShootEnemyBullet((largeEnemyShip) e);
+            //Spawn enemy ships again and again
+//            if(enemyShips.isEmpty()){
+//                if(enemyShipType==0){
+//                    enemyShipType=1;
+//                    spawnEnemyShips(enemyShipType);
+//                }else{
+//                    enemyShipType=0;
+//                    spawnEnemyShips(enemyShipType);
+//                }
+//            }
+
+            if(enemyShips.isEmpty() && enemyShipType==0){
+                enemyShipType=1;
+                spawnEnemyShips(enemyShipType);
+            }
+
+            //largeEnemy shoot with interval
+            if(enemyShipType==1 && !enemyShips.isEmpty()){
+                for(EnemyShips e: enemyShips){
+                    if(e instanceof largeEnemyShip){
+                        if(((largeEnemyShip) e).canEnemyShoot(now/1000000, 3000)){
+                            addAndShootEnemyBullet((largeEnemyShip) e);
+                        }
                     }
                 }
             }
-        }
-        updateEnemyBullets();
+            updateEnemyBullets();
 
+            if(enemyShips.isEmpty() && asteroids.isEmpty()){
+                Launcher.isVictory=true;
+                OtherHandlers.gameEndScreen(this);
+            }
+        }
     }
 
 
@@ -183,6 +204,11 @@ public class GameLoop extends AnimationTimer {
                 double asteroidY=asteroid.getImageView().getY();
                 if(asteroid.checkCollision(playerBullet)){
                     asteroid.collide(playerBullet);
+                    if(asteroid.getSize()>60){
+                        GameStage.score=GameStage.score+2;
+                    }else{
+                        GameStage.score=GameStage.score+1;
+                    }
 
                     //if illegal state exception occurs, add boolean value to check playerBullet is already removed or not
                     if (!isBulletRemoved) {
@@ -211,6 +237,13 @@ public class GameLoop extends AnimationTimer {
                 EnemyShips enemyShip=enemyShipsIterator.next();
                 if(enemyShip.checkCollision(playerBullet)){
 //                    enemyShip.collide(playerBullet);
+                    if(enemyShipType==0){
+                        GameStage.score=GameStage.score+1;
+                    }else{
+                        GameStage.score=GameStage.score+2;
+                    }
+
+
                     if (!isBulletRemoved) {
                         gameStage.getChildren().remove(playerBullet.getImageView());
                         playerBulletIterator.remove();
@@ -248,6 +281,7 @@ public class GameLoop extends AnimationTimer {
                 EnemyShips enemyShip=enemyShipsIterator.next();
                 if(playerShip.checkCollision(enemyShip)){
                     //enemyShip.collide()
+
                     gameStage.getChildren().remove(enemyShip.getImageView());
                     enemyShipsIterator.remove();
 
@@ -278,12 +312,14 @@ public class GameLoop extends AnimationTimer {
 
         //respawn if there are still lives
         if (playerShip.isDestroyed() && playerShip.getLife() > 0) {
-            System.out.println("life: "+playerShip.getLife());
             playerShip.respawn();
             gameStage.getChildren().add(playerShip.getImageView());
-        }else if(playerShip.getLife()<=0){
+            System.out.println("remaining life: "+playerShip.getLife());
+        }else if(playerShip.isDestroyed() && playerShip.getLife()<=0){
             //game over action
             System.out.println("Game Over");
+            Launcher.isGameOver=true;
+            OtherHandlers.gameEndScreen(this);
         }
 
     }

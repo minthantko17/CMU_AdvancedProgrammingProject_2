@@ -13,13 +13,15 @@ public class PlayerShip extends Characters {
     KeyCode topKey, rightKey, bottomKey, leftKey;
     boolean isMoveTop, isMoveRight, isMoveBottom, isMoveLeft;
     private boolean isDestroyed;
-    private int life = 3;
+    private int life;
     private boolean isInvincible;
     private long invincibleStartTime;
     private long invincibleDuration = 3000;
 
 
     public PlayerShip(GameStage gameStage, Image image, double startX, double startY, KeyCode topKey, KeyCode rightKey, KeyCode bottomKey, KeyCode leftKey, double speed) {
+        life=3;
+
         this.gameStage=gameStage;
         this.startX=startX;
         this.startY=startY;

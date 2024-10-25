@@ -35,12 +35,12 @@ public class largeEnemyShip extends EnemyShips{
         if(curX< 0 || curX > Launcher.WIDTH){
             movementDirectionAngle=(movementDirectionAngle+180)%360;
 //            speed=-speed;
-            System.out.println("curX: "+curX+ " launcherW: "+Launcher.WIDTH+" movementDirectionAngle: "+movementDirectionAngle+" speed: "+speed);
+//            System.out.println("curX: "+curX+ " launcherW: "+Launcher.WIDTH+" movementDirectionAngle: "+movementDirectionAngle+" speed: "+speed);
         }
         double deltaX= speed*Math.cos(Math.toRadians(movementDirectionAngle));
         curX=curX+deltaX;
         imageView.setX(curX);
-        System.out.println("After: deltaX"+deltaX +", curx"+ curX + " imgX "+ imageView.getX());
+//        System.out.println("After: deltaX"+deltaX +", curx"+ curX + " imgX "+ imageView.getX());
     }
 
     public Bullet shootBullet(){
@@ -50,8 +50,6 @@ public class largeEnemyShip extends EnemyShips{
         this.targetY=playerShip.getCurrY()+ (playerShip.getImageView().getFitHeight()/2);
         targetDirectionAngle = (int) Math.toDegrees(Math.atan2(targetY-shipY, targetX-shipX));
         double displayAngle=targetDirectionAngle-90;
-//        double shipDirection=this.getImageView().getRotate()-90;
-//        double shipLastDirectedAngle= this.getImageView().getRotate();
 
         Image bulletImage=new Image(Launcher.class.getResourceAsStream("assets/laserBlue.png"));
         double bulletSpeed=5;
