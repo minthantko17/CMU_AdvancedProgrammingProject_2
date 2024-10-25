@@ -5,19 +5,33 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 import se233.advprogrammingproject2.Launcher;
 import se233.advprogrammingproject2.View.GameStage;
+import se233.advprogrammingproject2.View.MainMenu;
 
 
 public class OtherHandlers {
     static Label gameEndLabel;
     static Label scoreLabel;
 
-    public static void changeToGamestage(){
+    public static void changeToMainMenu(){
+        MainMenu mainMenu = new MainMenu();
+        Scene mainMenuScene = new Scene(mainMenu, Launcher.WIDTH, Launcher.HEIGHT);
+        Launcher.primaryStage.setScene(mainMenuScene);
+
+        mainMenuScene.setOnKeyPressed(e -> {
+            if(e.getCode() == KeyCode.ENTER){
+                OtherHandlers.changeToGameStage();
+            }
+        });
+    }
+
+    public static void changeToGameStage(){
         GameStage gameStage = new GameStage();
         Scene gameScene=new Scene(gameStage, Launcher.WIDTH, Launcher.HEIGHT);
         GameController gameController=new GameController(gameScene,   gameStage);
@@ -26,7 +40,6 @@ public class OtherHandlers {
 
     public static void gameEndScreen(GameLoop gameLoop){
         gameLoop.stop();
-
 
         gameEndLabel=new Label();
         scoreLabel=new Label();
@@ -51,9 +64,17 @@ public class OtherHandlers {
         scoreLabel.setLayoutX(400);
         scoreLabel.setLayoutY(360);
 
-        Button playAgainButton=new Button("Play Again");
-        Button exitButton=new Button("Exit");
+        Button playAgainBtn=new Button("Play Again");
+        playAgainBtn.setStyle("-fx-text-fill: white; -fx-font-size: 20; -fx-font-weight: bold; -fx-background-color: Transparent;");
+        playAgainBtn.setLayoutX(550);
+        playAgainBtn.setLayoutY(450);
+        playAgainBtn.setOnMouseClicked(e->{OtherHandlers.changeToGameStage();});
 
+        Button mainMenuBtn=new Button("Main Menu");
+        mainMenuBtn.setStyle("-fx-text-fill: white; -fx-font-size: 20; -fx-font-weight: bold; -fx-background-color: Transparent;");
+        mainMenuBtn.setLayoutX(350);
+        mainMenuBtn.setLayoutY(450);
+        mainMenuBtn.setOnMouseClicked(e->{OtherHandlers.changeToMainMenu();});
 
         Launcher.isGameOver=false;
         Launcher.isVictory=false;
@@ -68,7 +89,7 @@ public class OtherHandlers {
                 BackgroundSize.DEFAULT );
         gameEndPane.setBackground(new Background(background));
 
-        gameEndPane.getChildren().addAll(gameEndLabel,scoreLabel,playAgainButton,exitButton);
+        gameEndPane.getChildren().addAll(gameEndLabel,scoreLabel,playAgainBtn,mainMenuBtn);
 
         Scene scene = new Scene(gameEndPane, Launcher.WIDTH, Launcher.HEIGHT);
         Launcher.primaryStage.setScene(scene);

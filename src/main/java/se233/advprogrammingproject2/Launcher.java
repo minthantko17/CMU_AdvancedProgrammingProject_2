@@ -3,12 +3,8 @@ package se233.advprogrammingproject2;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-import se233.advprogrammingproject2.Controllers.GameController;
 import se233.advprogrammingproject2.Controllers.OtherHandlers;
-import se233.advprogrammingproject2.View.GameStage;
 import se233.advprogrammingproject2.View.MainMenu;
 
 public class Launcher extends Application {
@@ -29,7 +25,7 @@ public class Launcher extends Application {
 
         mainMenuScene.setOnKeyPressed(e -> {
             if(e.getCode() == KeyCode.ENTER){
-                OtherHandlers.changeToGamestage();
+                OtherHandlers.changeToGameStage();
             }
         });
     }

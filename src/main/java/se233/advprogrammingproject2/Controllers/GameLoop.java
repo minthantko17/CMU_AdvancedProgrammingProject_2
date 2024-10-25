@@ -19,6 +19,8 @@ public class GameLoop extends AnimationTimer {
     private List<Asteroids> newAsteroids;
     List<EnemyShips> enemyShips;
     private int enemyShipType;
+    private int enemyRound;
+    private int asteroidRound;
 
 
     public GameLoop(GameStage gameStage, PlayerShip playerShip) {
@@ -31,6 +33,7 @@ public class GameLoop extends AnimationTimer {
         enemyShips=new ArrayList<>();
         spawnAsteroids(120);
         enemyShipType=0;
+        asteroidRound=0;
         spawnEnemyShips(enemyShipType);
 
     }
@@ -69,10 +72,27 @@ public class GameLoop extends AnimationTimer {
 //                }
 //            }
 
-            if(enemyShips.isEmpty() && enemyShipType==0){
-                enemyShipType=1;
-                spawnEnemyShips(enemyShipType);
+            if(asteroids.isEmpty() && asteroidRound<1){
+                asteroidRound++;
+                spawnAsteroids(120);
             }
+
+//            if(enemyShips.isEmpty() && enemyShipType==0){
+//                enemyShipType=1;
+//                spawnEnemyShips(enemyShipType);
+//            }
+            if(enemyShips.isEmpty() && enemyRound<4){
+                if(enemyShipType==0){
+                    enemyShipType=1;
+                    spawnEnemyShips(enemyShipType);
+                }else{
+                    enemyShipType=0;
+                    spawnEnemyShips(enemyShipType);
+                }
+                enemyRound++;
+            }
+
+
 
             //largeEnemy shoot with interval
             if(enemyShipType==1 && !enemyShips.isEmpty()){
