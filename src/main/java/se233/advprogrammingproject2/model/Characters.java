@@ -45,15 +45,12 @@ public abstract class Characters extends ImageView {
         double deltaY= speed*Math.sin(Math.toRadians(directionAngle));
         imageView.setX(imageView.getX()+deltaX);
         imageView.setY(imageView.getY()+deltaY);
-
     }
 
-    //check collision
     public boolean checkCollision(Characters other){
         return this.imageView.getBoundsInParent().intersects(other.getImageView().getBoundsInParent());
     }
 
-    //collide
     public void collide(Characters obj){
         if(this instanceof Asteroids && obj instanceof Bullet){
             System.out.println("Collided");
@@ -62,7 +59,6 @@ public abstract class Characters extends ImageView {
         }
     }
 
-    //explode method
     public void explode(){
         //explode
         System.out.println("Exploded");
@@ -72,7 +68,6 @@ public abstract class Characters extends ImageView {
     public void remove(){
         System.out.println("Removed");
     }
-
 
     public ImageView getImageView(){
         return imageView;

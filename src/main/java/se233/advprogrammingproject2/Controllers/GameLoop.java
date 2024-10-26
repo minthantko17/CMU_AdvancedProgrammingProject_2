@@ -1,7 +1,12 @@
 package se233.advprogrammingproject2.Controllers;
 
 import javafx.animation.AnimationTimer;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.image.Image;
+import javafx.util.Duration;
 import se233.advprogrammingproject2.Launcher;
 import se233.advprogrammingproject2.model.*;
 import se233.advprogrammingproject2.View.GameStage;
@@ -44,9 +49,9 @@ public class GameLoop extends AnimationTimer {
         spawnEnemyShips(enemyShipType);
         bossSpawn =false;
         bossDead=false;
-
     }
 
+    //------Main game loop handle-----
     @Override
     public void handle(long now) {
         if(!Launcher.isGameOver && !Launcher.isVictory){
@@ -55,42 +60,19 @@ public class GameLoop extends AnimationTimer {
 
             updateAndCollidePlayerBullet();
             updateAndCollidePlayerSpecialAttack();
-
+            updateAndCollidePlayerShip();
             for (Asteroids asteroid : asteroids) {
                 asteroid.update();
             }
-
             for (EnemyShips e: enemyShips){
                 e.update();
             }
 
-            updateAndCollidePlayerShip();
-
-            //Spawn asteroids again and again
-//            if(asteroids.isEmpty()){
-//                spawnAsteroids(120);
-//            }
-
-            //Spawn enemy ships again and again
-//            if(enemyShips.isEmpty()){
-//                if(enemyShipType==0){
-//                    enemyShipType=1;
-//                    spawnEnemyShips(enemyShipType);
-//                }else{
-//                    enemyShipType=0;
-//                    spawnEnemyShips(enemyShipType);
-//                }
-//            }
-
+            //Spawn again
             if(asteroids.isEmpty() && asteroidRound<1){
                 asteroidRound++;
                 spawnAsteroids(120);
             }
-
-//            if(enemyShips.isEmpty() && enemyShipType==0){
-//                enemyShipType=1;
-//                spawnEnemyShips(enemyShipType);
-//            }
             if(enemyShips.isEmpty() && enemyRound<4){
                 if(enemyShipType==0){
                     enemyShipType=1;
@@ -102,13 +84,11 @@ public class GameLoop extends AnimationTimer {
                 enemyRound++;
             }
 
-
-
             //largeEnemy shoot with interval
             if(enemyShipType==1 && !enemyShips.isEmpty()){
                 for(EnemyShips e: enemyShips){
                     if(e instanceof LargeEnemyShip){
-                        if(((LargeEnemyShip) e).canEnemyShoot(now/1000000, 3000)){
+                        if(((LargeEnemyShip) e).canShoot(now/1000000, 3000)){
                             addAndShootEnemyBullet((LargeEnemyShip) e);
                         }
                     }
@@ -116,6 +96,7 @@ public class GameLoop extends AnimationTimer {
             }
             updateEnemyBullets();
 
+            //Final Boss
             if(enemyShips.isEmpty() && asteroids.isEmpty() && !bossSpawn){
                 bossSpawn =true;
                 spawnBoss();
@@ -125,13 +106,21 @@ public class GameLoop extends AnimationTimer {
 //                OtherHandlers.gameEndScreen(this);
             }
             if(bossShip!=null){
-                bossShip.update();
-                if(bossShip.canEnemyShoot(now/1000000, 3000)){
-                    addAndShootBossBullet();
+                if(bossShip.getCurY()<40){
+                    bossShip.bossComing();
+                }else{
+                    GameStage.bossHpBarBorder.setVisible(true);
+                    GameStage.bossHpBar.setVisible(true);
+                    GameStage.bossHpBar.setWidth(bossShip.getBossHP()*4);
+                    bossShip.update();
+                    if(bossShip.canShoot(now/1000000, 3000)){
+                        addAndShootBossBullet();
+                    }
+                    updateBossBullets();
                 }
-                updateBossBullets();
             }
 
+            //Game Victory and End
             if(enemyShips.isEmpty() && asteroids.isEmpty() && bossDead){
                 Launcher.isVictory=true;
                 OtherHandlers.gameEndScreen(this);
@@ -140,7 +129,7 @@ public class GameLoop extends AnimationTimer {
     }
 
 
-    // ------HELPER METHODS------
+    // ------ADDING TO GAME STAGE------
     public void addPlayerBullet(Bullet bullet) {
         playerBullets.add(bullet);
         System.out.println("bullet added"+ playerBullets.size());
@@ -148,7 +137,7 @@ public class GameLoop extends AnimationTimer {
         System.out.println("bullet added to GS"+ gameStage.getChildren().size());
     }
 
-    public void addSpecialBullet(List<Bullet> specialBullets) {
+    public void addPlayerSpecialBullet(List<Bullet> specialBullets) {
         playerSpecialBullets.addAll(specialBullets);
         for(Bullet bullet : specialBullets){
             gameStage.getChildren().addAll(bullet.getImageView());
@@ -169,23 +158,30 @@ public class GameLoop extends AnimationTimer {
         }
     }
 
-    //spawn asteroid for game init
     public void spawnAsteroids(int size){
-        for (int i = 0; i < 5; i++) {
-            double startX=Math.random() * Launcher.WIDTH;
-            double startY=Math.random() * Launcher.HEIGHT;
-
-            while(startX+80 > playerShip.getImageView().getX() && startX-80 < playerShip.getImageView().getX()){
-                startX=Math.random() * Launcher.WIDTH;
+        for (int i = 0; i < 6; i++) {
+            double startX;
+            double startY;
+            int rand=(int)(Math.random()*2);
+            if(rand==0){
+                startX=Math.random() * (Launcher.WIDTH-60);
+                startY=((int)(Math.random()*2))*(Launcher.HEIGHT-60);
+            }else{
+                startX=((int)(Math.random()*2))*(Launcher.WIDTH-60);
+                startY=Math.random()*(Launcher.HEIGHT-60);
             }
-            while(startY+80 > playerShip.getImageView().getY() && startY-80 < playerShip.getImageView().getY()){
-                startY=Math.random() * Launcher.HEIGHT;
-            }
+//            double startX=Math.random() * Launcher.WIDTH;
+//            double startY=Math.random() * Launcher.HEIGHT;
+//            while(startX+80 > playerShip.getImageView().getX() && startX-80 < playerShip.getImageView().getX()){
+//                startX=Math.random() * Launcher.WIDTH;
+//            }
+//            while(startY+80 > playerShip.getImageView().getY() && startY-80 < playerShip.getImageView().getY()){
+//                startY=Math.random() * Launcher.HEIGHT;
+//            }
 
             Asteroids asteroid = new Asteroids(gameStage,
                     new Image(Launcher.class.getResourceAsStream("assets/asteroid1.png")),
-                    startX, startY,
-                    1.2,
+                    startX, startY, 1.2,
                     (int) (Math.random() * 361),    // Random angle (0 to 360 degrees)
                     1 + Math.random() * 2,   // Random rotation speed
                     size
@@ -195,27 +191,23 @@ public class GameLoop extends AnimationTimer {
         }
     }
 
-    //spawn enemy
     public void spawnEnemyShips(int enemyShipType){
-
         if (enemyShipType==0) {
             for (int i=0; i<5 ; i++){
                 double startX;
                 double startY;
                 int rand=(int)(Math.random()*2);
                 if(rand==0){
-                    startX=Math.random() * Launcher.WIDTH;
-                    startY=((int)(Math.random()*2))*Launcher.HEIGHT-20;
+                    startX=Math.random() * (Launcher.WIDTH-40);
+                    startY=((int)(Math.random()*2))*(Launcher.HEIGHT-40);
                 }else{
-                    startX=((int)(Math.random()*2))*Launcher.WIDTH-20;
-                    startY=Math.random()*Launcher.HEIGHT;
+                    startX=((int)(Math.random()*2))*(Launcher.WIDTH-40);
+                    startY=Math.random()*(Launcher.HEIGHT-40);
                 }
 
                 EnemyShips smallEnemyShips=new SmallEnemyShip(
                         new Image(Launcher.class.getResourceAsStream("assets/enemyBlack1.png")),
-                        startX, startY,
-                        1.5,
-                        playerShip
+                        startX, startY, 1.5, playerShip
                 );
                 enemyShips.add(smallEnemyShips);
                 gameStage.getChildren().add(smallEnemyShips.getImageView());
@@ -224,7 +216,7 @@ public class GameLoop extends AnimationTimer {
             for (int i=0; i<4 ; i++){
                 double startX;
                 double startY;
-                startX=((int)(Math.random()*2))*Launcher.WIDTH ;
+                startX=((int)(Math.random()*2))*(Launcher.WIDTH-40) ;
 //                startX=Launcher.WIDTH;
                 startY=Math.random()*(Launcher.HEIGHT-40);
 
@@ -241,19 +233,18 @@ public class GameLoop extends AnimationTimer {
     }
 
     public void spawnBoss(){
-        double startX=((int)(Math.random()*2))*Launcher.WIDTH;
-        double startY=30;
+        double startX=(Launcher.WIDTH/2)-50;
+        double startY=-50;
         Image bossShipImg=new Image(Launcher.class.getResourceAsStream("assets/ufoBoss.png"));
 
-        bossShip = new Boss(bossShipImg, startX, startY, 1.5, playerShip);
+        bossShip = new Boss(bossShipImg, startX, startY, 3, playerShip);
 
         gameStage.getChildren().add(bossShip.getImageView());
     }
 
 
     // -------UPDATE CHARACTERS FOR LOOP + CHECK COLLOID----------
-
-    // PlayerBullet and related
+    // PlayerBullet
     private void updateAndCollidePlayerBullet(){
         Iterator<Bullet> playerBulletIterator = playerBullets.iterator();
         while (playerBulletIterator.hasNext()) {
@@ -346,6 +337,7 @@ public class GameLoop extends AnimationTimer {
             if(bossSpawn && bossShip.checkCollision(playerBullet)){
                 bossShip.setBossHP(bossShip.getBossHP()-1);
                 GameStage.bossHpLabel.setText("Boss HP: "+bossShip.getBossHP());
+                GameStage.bossHpBar.setWidth(bossShip.getBossHP()*4);
                 if(bossShip.getBossHP()<=0){
                     bossDead=true;
                     GameStage.score=GameStage.score+50;
@@ -434,9 +426,10 @@ public class GameLoop extends AnimationTimer {
             if(bossSpawn && bossShip.checkCollision(playerSpecialBullet)){
                 bossShip.setBossHP(bossShip.getBossHP()-1);
                 GameStage.bossHpLabel.setText("Boss HP: "+bossShip.getBossHP());
+                GameStage.bossHpBar.setWidth(bossShip.getBossHP()*4);
                 if (!isBulletRemoved) {
                     gameStage.getChildren().remove(playerSpecialBullet.getImageView());
-                    playerSpecialBullet.remove();
+                    playerSpecialBulletIterator.remove();
                     isBulletRemoved=true;
                 }
                 if(bossShip.getBossHP()<=0){
@@ -450,7 +443,7 @@ public class GameLoop extends AnimationTimer {
         }
     }
 
-    //PlayerShip and others
+    //PlayerShip
     private void updateAndCollidePlayerShip(){
         playerShip.update();
         if(!playerShip.isDestroyed() && !playerShip.isInvincible()){
@@ -499,6 +492,27 @@ public class GameLoop extends AnimationTimer {
                 }
             }
 
+            if(bossShip!=null){
+                if(playerShip.checkCollision(bossShip)){
+                    playerShip.explode();
+                    playerShip.destroy();
+                    gameStage.getChildren().remove(playerShip.getImageView());
+                }
+
+                Iterator<Bullet> bossBulletsIterator=bossBullets.iterator();
+                while(bossBulletsIterator.hasNext()){
+                    Bullet bossBullet=bossBulletsIterator.next();
+                    if(playerShip.checkCollision(bossBullet)){
+                        gameStage.getChildren().remove(bossBullet.getImageView());
+                        bossBulletsIterator.remove();
+
+                        playerShip.explode();
+                        playerShip.destroy();
+                        gameStage.getChildren().remove(playerShip.getImageView());
+                        break;
+                    }
+                }
+            }
         }
 
         //respawn if there are still lives

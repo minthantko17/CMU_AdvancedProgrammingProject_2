@@ -39,7 +39,6 @@ public class GameController {
     private void addEventListeners(){
         //change ship direction according to cursor
         gameStage.setOnMouseMoved(e->{
-//            System.out.println("mousemoved");
             //ImageView center
             double centerX = playerShip.getImageView().getBoundsInParent().getMinX()+playerShip.getImageView().getBoundsInParent().getWidth() /2;
             double centerY = playerShip.getImageView().getBoundsInParent().getMinY()+playerShip.getImageView().getBoundsInParent().getWidth() /2;
@@ -52,7 +51,7 @@ public class GameController {
             Use tan(x) when you have an angle and need the tangent value. (just my note, we don't use it here)
             Use atan2(y, x) when you have coordinates and need to find the angle while considering the signs to identify the correct quadrant.
             */
-             double angle=Math.toDegrees(Math.atan2(mouseY-centerY, mouseX-centerX));
+            double angle=Math.toDegrees(Math.atan2(mouseY-centerY, mouseX-centerX));
 
             playerShip.getImageView().setRotate(angle +90);
             logger.info("angle: {}, rotatedangle: {}",angle, playerShip.getImageView().getRotate());
@@ -83,17 +82,19 @@ public class GameController {
             //special attack
             if(e.getButton()==MouseButton.PRIMARY && !playerShip.isDestroyed() && GameStage.specialEnergy>=30){
                 GameStage.specialEnergy=0;
-                List<Bullet> bullets=playerShip.shootSpecialAttack();
-                gameLoop.addSpecialBullet(bullets);
-
                 shotsFired = 0;
 
+                //fire instantly
+                List<Bullet> bullets=playerShip.shootSpecialAttack();
+                gameLoop.addPlayerSpecialBullet(bullets);
+
+                //fire 2 more times with 0.5sec interval
                 timeline = new Timeline(new KeyFrame(Duration.seconds(0.5), new EventHandler<ActionEvent>() {
                     @Override
                     public void handle(ActionEvent event) {
                         if (shotsFired < 2) {
                             List<Bullet> bullets = playerShip.shootSpecialAttack();
-                            gameLoop.addSpecialBullet(bullets);
+                            gameLoop.addPlayerSpecialBullet(bullets);
                             shotsFired++;
                         } else {
                             shotsFired = 0;
@@ -101,8 +102,6 @@ public class GameController {
                         }
                     }
                 }));
-
-                // Set the timeline to repeat 3 times
                 timeline.setCycleCount(2);
                 timeline.play();
             }

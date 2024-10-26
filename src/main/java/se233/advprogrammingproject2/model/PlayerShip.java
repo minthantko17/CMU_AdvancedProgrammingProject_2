@@ -91,6 +91,7 @@ public class PlayerShip extends Characters {
         }
     }
 
+    //---------movements---------
     public void moveLeft(){
         isMoveLeft=true;
         isMoveRight=false;
@@ -112,7 +113,6 @@ public class PlayerShip extends Characters {
         GameController.logger.info("Moving Bottom");
     }
 
-
     public void stopHorizontal(){
         isMoveRight=false;
         isMoveLeft=false;
@@ -122,38 +122,31 @@ public class PlayerShip extends Characters {
         isMoveBottom=false;
     }
 
-
     public void moveHorizontal(){
-        if(isMoveLeft){
+        if(isMoveLeft && currX>=0){
             currX=currX-speed;
         }
-        if(isMoveRight){
+        if(isMoveRight && currX+ imageView.getFitWidth()<=Launcher.WIDTH){
             currX=currX+speed;
         }
         imageView.setX(currX);
     }
     public void moveVertical(){
-        if(isMoveTop){
+        if(isMoveTop && currY>=0){
             currY = currY -speed;
         }
-        if(isMoveBottom){
+        if(isMoveBottom && currY+imageView.getFitHeight()+30<=Launcher.HEIGHT){
             currY = currY +speed;
         }
         imageView.setY(currY);
     }
 
+    //--------------------------
     public Bullet shootBullet(){
         double shipX=this.getImageView().getBoundsInParent().getMinX()+this.getImageView().getBoundsInParent().getWidth() /2;
         double shipY=this.getImageView().getBoundsInParent().getMinY()+this.getImageView().getBoundsInParent().getWidth() /2;
         double shipDirection=this.getImageView().getRotate()-90;     // adjust like +- 90 according to the input image
         double shipLastDirectedAngle= this.getImageView().getRotate();
-
-//        double shipHeight = this.getImageView().getBoundsInParent().getHeight() / 2; // or another suitable value
-//        double shipLength = this.getImageView().getBoundsInParent().getWidth() / 2; // or another suitable value
-//
-//        // Use trigonometry to calculate the position of the bullet at the front of the ship
-//        double bulletX = shipX + Math.cos(Math.toRadians(shipDirection)) * shipLength;
-//        double bulletY = shipY + Math.sin(Math.toRadians(shipDirection)) * shipHeight;
 
         Image bulletImage=new Image(Launcher.class.getResourceAsStream("assets/laserRed.png"));
         double bulletSpeed=15;
@@ -230,11 +223,5 @@ public class PlayerShip extends Characters {
     public double getCurrY(){
         return this.currY;
     }
-
-
-    //score
-
-    //game finish
-
 
 }

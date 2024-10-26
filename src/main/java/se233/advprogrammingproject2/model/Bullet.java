@@ -22,7 +22,6 @@ public class Bullet extends Characters{
         imageView.setRotate(bulletDisplayAngle);
     }
 
-    //update bullet position
     public void update(){
         double deltaX= speed*Math.cos(Math.toRadians(bulletMovementDirectionAngle));
         double deltaY= speed*Math.sin(Math.toRadians(bulletMovementDirectionAngle));
@@ -30,7 +29,6 @@ public class Bullet extends Characters{
         imageView.setY(imageView.getY()+deltaY);
     }
 
-    //check if the bullet is out of screen
     public boolean isOffScreen(){
         return (imageView.getX()<0 || imageView.getX()> Launcher.WIDTH || imageView.getY()<0 || imageView.getY()> Launcher.HEIGHT);
     }

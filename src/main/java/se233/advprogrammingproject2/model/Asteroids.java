@@ -49,29 +49,6 @@ public class Asteroids extends Characters{
         }
     }
 
-//    @Override
-//    public void explode(){
-//        System.out.println("Exploded");
-//        for (int i = 0; i < 4; i++) {
-//            // Create smaller asteroid with a fraction of the original size
-//            Asteroids smallerAsteroid = new Asteroids(gameStage,
-//                    new Image(Launcher.class.getResourceAsStream("assets/asteroid2.png")),
-//                    this.imageView.getX(), // Start at the same position
-//                    this.imageView.getY(), // Start at the same position
-//                    2,
-//                    (int)(Math.random()*361),
-//                    2,
-//                    60
-//            );
-//
-//            // Add the smaller asteroid to the game stage
-//            gameStage.getChildren().add(smallerAsteroid.getImageView());
-//            // Add to the list of asteroids for collision detection
-////            gameLoop.getAsteroids().add(smallerAsteroid);
-//        }
-////        gameStage.getChildren().remove(this.imageView);
-//    }
-
     public List<Asteroids> spawnSmaller(double startX, double startY, int size){
         List<Asteroids> smallerAsteroids=new ArrayList<>();
         for (int i = 0; i < 5; i++) {

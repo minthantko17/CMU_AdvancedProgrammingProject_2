@@ -11,14 +11,13 @@ public class Boss extends EnemyShips{
     double curX, curY;
     int movementDirectionAngle;
     int targetDirectionAngle;
-    private long enemyLastShotTime;
     public int bossHP;
 
     public Boss(Image image, double startX, double startY, double speed, PlayerShip playerShip) {
         super(image, startX, startY, speed, playerShip);
         curX=startX;
         curY=startY;
-        bossHP=100;
+        bossHP=50;
 
         this.targetX=playerShip.getCurrX();
         this.targetY=playerShip.getCurrY();
@@ -34,7 +33,7 @@ public class Boss extends EnemyShips{
     @Override
     public void update(){
         //move horizontally
-        if(curX< 0 || curX > Launcher.WIDTH){
+        if(curX< 0 || curX+100 > Launcher.WIDTH){
             movementDirectionAngle=(movementDirectionAngle+180)%360;
         }
         double deltaX= speed*Math.cos(Math.toRadians(movementDirectionAngle));
@@ -42,11 +41,16 @@ public class Boss extends EnemyShips{
         imageView.setX(curX);
     }
 
+    public void bossComing(){
+        curY=curY+0.5;
+        imageView.setY(curY);
+    }
+
     public List<Bullet> shootBullet(){
         double shipX=this.getImageView().getBoundsInParent().getMinX()+this.getImageView().getBoundsInParent().getWidth() /2;
         double shipY=this.getImageView().getBoundsInParent().getMinY()+this.getImageView().getBoundsInParent().getHeight();
         Image bulletImage=new Image(Launcher.class.getResourceAsStream("assets/laserBlue.png"));
-        double bulletSpeed=5;
+        double bulletSpeed=10;
 
         List<Bullet> bullets=new ArrayList<Bullet>();
 
@@ -60,7 +64,6 @@ public class Boss extends EnemyShips{
         Bullet bullet7=new Bullet(this, bulletImage, shipX, shipY, 140, 230, bulletSpeed);
         Bullet bullet8=new Bullet(this, bulletImage, shipX, shipY, 160, 250, bulletSpeed);
         Bullet bullet9=new Bullet(this, bulletImage, shipX, shipY, 180, 270, bulletSpeed);
-
 
         bullets.add(bullet0);
         bullets.add(bullet1);
@@ -76,18 +79,17 @@ public class Boss extends EnemyShips{
         return bullets;
     }
 
-    public boolean canEnemyShoot(long currentTime, long interval) {
-        if(currentTime-enemyLastShotTime>=interval){
-            enemyLastShotTime=currentTime;
-            return true;
-        }
-        return false;
-    }
-
     public void setBossHP(int bossHP) {
         this.bossHP=bossHP;
     }
     public int getBossHP() {
         return bossHP;
+    }
+
+    public double getCurX() {
+        return curX;
+    }
+    public double getCurY() {
+        return curY;
     }
 }

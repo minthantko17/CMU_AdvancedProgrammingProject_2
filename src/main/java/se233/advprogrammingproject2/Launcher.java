@@ -1,7 +1,10 @@
 package se233.advprogrammingproject2;
 
 import javafx.application.Application;
+import javafx.scene.Cursor;
+import javafx.scene.ImageCursor;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 import se233.advprogrammingproject2.Controllers.OtherHandlers;
@@ -16,8 +19,11 @@ public class Launcher extends Application {
 
     public void start(Stage stage) {
         primaryStage=stage;
+        Image cursorImage=new Image(Launcher.class.getResourceAsStream("assets/redTarget.png"));
+        Cursor cursor=new ImageCursor(cursorImage, cursorImage.getWidth()/2, cursorImage.getHeight()/2);
 
         MainMenu mainMenu = new MainMenu();
+        mainMenu.setCursor(cursor);
         Scene mainMenuScene = new Scene(mainMenu, WIDTH, HEIGHT);
 
         primaryStage.setScene(mainMenuScene);

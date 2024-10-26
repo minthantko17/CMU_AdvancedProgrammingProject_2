@@ -16,16 +16,14 @@ public class SmallEnemyShip extends EnemyShips{
         curY=startY;
 
         initTime=System.currentTimeMillis();
-        changeDirTime=4000;
+        changeDirTime=2500;
         this.targetX=playerShip.getCurrX();
         this.targetY=playerShip.getCurrY();
         this.directionAngle = (int)Math.toDegrees(Math.atan2(this.targetY-startY, this.targetX-startX));
-
         this.size=40;
         this.imageView.setPreserveRatio(true);
         this.imageView.setFitWidth(size);
         this.imageView.setRotate(directionAngle-90);
-
         isFollowing=false;
     }
 

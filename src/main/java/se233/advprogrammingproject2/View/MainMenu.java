@@ -3,6 +3,8 @@ package se233.advprogrammingproject2.View;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.geometry.Pos;
+import javafx.scene.Cursor;
+import javafx.scene.ImageCursor;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
@@ -28,6 +30,10 @@ public class MainMenu extends Pane {
                 BackgroundSize.DEFAULT );
         this.setBackground(new Background(background));
 
+        Image cursorImage=new Image(Launcher.class.getResourceAsStream("assets/redTarget.png"));
+        Cursor cursor=new ImageCursor(cursorImage, cursorImage.getWidth()/2, cursorImage.getHeight()/2);
+        this.setCursor(cursor);
+
         gameName = new Label("ASTEROIDS");
         gameName.setStyle("-fx-text-fill: white;");
         gameName.setFont(Font.font("Arial", FontWeight.BOLD, FontPosture.ITALIC, 80));
@@ -41,6 +47,7 @@ public class MainMenu extends Pane {
         startText.setAlignment(Pos.CENTER);
         startText.setLayoutX(350);
         startText.setLayoutY(360);
+
         Timeline timeline=new Timeline(
                 new KeyFrame(Duration.seconds(0.5), e->{startText.setVisible(false);}),
                 new KeyFrame(Duration.seconds(1), e->{startText.setVisible(true);})
@@ -49,7 +56,6 @@ public class MainMenu extends Pane {
         timeline.play();
 
         this.getChildren().addAll(gameName, startText);
-
     }
 
 }

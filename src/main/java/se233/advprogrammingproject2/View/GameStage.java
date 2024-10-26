@@ -1,11 +1,15 @@
 package se233.advprogrammingproject2.View;
 
 import javafx.geometry.Insets;
+import javafx.scene.Cursor;
+import javafx.scene.ImageCursor;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import se233.advprogrammingproject2.model.Keys;
 import se233.advprogrammingproject2.model.PlayerShip;
 import se233.advprogrammingproject2.Launcher;
@@ -18,7 +22,10 @@ public class GameStage extends Pane {
     public static int specialEnergy;
     Label scoreLabel;
     Label specialEnergyLabel;
+    Label lifeLabel;
     public static Label bossHpLabel;
+    public static Rectangle bossHpBar;
+    public static Rectangle bossHpBarBorder;
     HBox playerLifeHBox;
     Image playerShipImgMini;
 
@@ -36,19 +43,41 @@ public class GameStage extends Pane {
                 BackgroundSize.DEFAULT );
         this.setBackground(new Background(background));
 
+        Image cursorImage=new Image(Launcher.class.getResourceAsStream("assets/redTarget.png"));
+        Cursor cursor=new ImageCursor(cursorImage, cursorImage.getWidth()/2, cursorImage.getHeight()/2);
+        this.setCursor(cursor);
+
         score=0;
         scoreLabel = new Label("Score: " + score);
-        scoreLabel.setStyle("-fx-text-fill: white;");
+        scoreLabel.setStyle("-fx-text-fill: white; -fx-font-size: 15");
+        scoreLabel.setLayoutX(10);
+        scoreLabel.setLayoutY(10);
 
         specialEnergy=0;
         specialEnergyLabel = new Label("Special Energy: " + specialEnergy+"/30");
-        specialEnergyLabel.setStyle("-fx-text-fill: white;");
-        specialEnergyLabel.setLayoutX(70);
+        specialEnergyLabel.setStyle("-fx-text-fill: white; -fx-font-size: 15");
+        specialEnergyLabel.setLayoutX(100);
+        specialEnergyLabel.setLayoutY(10);
 
         bossHpLabel=new Label("Boss HP: ");
-        bossHpLabel.setStyle("-fx-text-fill: white;");
-        bossHpLabel.setLayoutX(250);
+        bossHpLabel.setStyle("-fx-text-fill: white; -fx-font-size: 15");
+        bossHpLabel.setLayoutX(300);
+        bossHpLabel.setLayoutY(10);
         bossHpLabel.setVisible(false);
+
+        bossHpBarBorder=new Rectangle(399,9,202,22);
+        bossHpBarBorder.setFill(Color.TRANSPARENT);
+        bossHpBarBorder.setStroke(Color.LIGHTGRAY);
+        bossHpBarBorder.setStrokeWidth(2);
+        bossHpBarBorder.setVisible(false);
+
+        bossHpBar=new Rectangle();
+        bossHpBar.setX(400);
+        bossHpBar.setY(10);
+        bossHpBar.setWidth(200);
+        bossHpBar.setHeight(20);
+        bossHpBar.setFill(Color.RED);
+        bossHpBar.setVisible(false);
 
         keys=new Keys();
         playerShipImg=new Image(Launcher.class.getResourceAsStream("assets/playerShip1_red.png"));
@@ -67,7 +96,13 @@ public class GameStage extends Pane {
         playerLifeHBox.setPadding(new Insets(10,10,10,10));
         playerLifeHBox.setSpacing(10);
 
-        this.getChildren().addAll(scoreLabel, specialEnergyLabel, bossHpLabel, playerLifeHBox, playerShip.getImageView());
+        lifeLabel=new Label("Life :");
+        lifeLabel.setStyle("-fx-text-fill: white; -fx-font-size: 15");
+        lifeLabel.setLayoutX(850);
+        lifeLabel.setLayoutY(15);
+
+
+        this.getChildren().addAll(scoreLabel, specialEnergyLabel, bossHpLabel, bossHpBarBorder, bossHpBar, lifeLabel, playerLifeHBox, playerShip.getImageView());
         this.setFocusTraversable(true); // Ensure the pane can capture key events
         this.requestFocus(); // Request focus when the stage is shown
     }
@@ -78,13 +113,6 @@ public class GameStage extends Pane {
 
     public Keys getKeys(){
         return keys;
-    }
-
-    public int getScore(){
-        return score;
-    }
-    public void setScore(int score){
-        GameStage.score =score;
     }
 
     //Update Display Status Labels
