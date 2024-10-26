@@ -1,17 +1,16 @@
 package se233.advprogrammingproject2.model;
 
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import se233.advprogrammingproject2.Launcher;
 
-public class smallEnemyShip extends EnemyShips{
+public class SmallEnemyShip extends EnemyShips{
     long initTime;
     long changeDirTime;
     double targetX, targetY;
     double curX, curY;
     boolean isFollowing;
 
-    public smallEnemyShip(Image image, double startX, double startY, double speed, PlayerShip playerShip) {
+    public SmallEnemyShip(Image image, double startX, double startY, double speed, PlayerShip playerShip) {
         super(image, startX, startY, speed, playerShip);
         curX=startX;
         curY=startY;

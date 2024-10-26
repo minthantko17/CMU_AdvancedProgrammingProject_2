@@ -3,7 +3,7 @@ package se233.advprogrammingproject2.model;
 import javafx.scene.image.Image;
 import se233.advprogrammingproject2.Launcher;
 
-public class largeEnemyShip extends EnemyShips{
+public class LargeEnemyShip extends EnemyShips{
     double targetX, targetY;
     double curX, curY;
     boolean isFollowing;
@@ -11,7 +11,7 @@ public class largeEnemyShip extends EnemyShips{
     int targetDirectionAngle;
     private long enemyLastShotTime;
 
-    public largeEnemyShip(Image image, double startX, double startY, double speed, PlayerShip playerShip) {
+    public LargeEnemyShip(Image image, double startX, double startY, double speed, PlayerShip playerShip) {
         super(image, startX, startY, speed, playerShip);
         curX=startX;
         curY=startY;
@@ -45,7 +45,7 @@ public class largeEnemyShip extends EnemyShips{
 
     public Bullet shootBullet(){
         double shipX=this.getImageView().getBoundsInParent().getMinX()+this.getImageView().getBoundsInParent().getWidth() /2;
-        double shipY=this.getImageView().getBoundsInParent().getMinY()+this.getImageView().getBoundsInParent().getWidth() /2;
+        double shipY=this.getImageView().getBoundsInParent().getMinY()+this.getImageView().getBoundsInParent().getHeight() /2;
         this.targetX=playerShip.getCurrX()+ (playerShip.getImageView().getFitWidth()/2);
         this.targetY=playerShip.getCurrY()+ (playerShip.getImageView().getFitHeight()/2);
         targetDirectionAngle = (int) Math.toDegrees(Math.atan2(targetY-shipY, targetX-shipX));

@@ -7,6 +7,9 @@ import se233.advprogrammingproject2.Controllers.GameController;
 import se233.advprogrammingproject2.Launcher;
 import se233.advprogrammingproject2.View.GameStage;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class PlayerShip extends Characters {
     double currX;
     double currY;
@@ -156,6 +159,42 @@ public class PlayerShip extends Characters {
         double bulletSpeed=15;
         Bullet bullet=new Bullet(this, bulletImage, shipX, shipY, shipDirection, shipLastDirectedAngle, bulletSpeed);
         return bullet;
+    }
+
+    public List<Bullet> shootSpecialAttack(){
+        double shipX=this.getImageView().getBoundsInParent().getMinX()+this.getImageView().getBoundsInParent().getWidth() /2;
+        double shipY=this.getImageView().getBoundsInParent().getMinY()+this.getImageView().getBoundsInParent().getWidth() /2;
+        Image bulletImage=new Image(Launcher.class.getResourceAsStream("assets/laserRed2.png"));
+        double bulletSpeed=10;
+
+        List<Bullet> bullets=new ArrayList<Bullet>();
+        Bullet bullet0=new Bullet(this, bulletImage,shipX, shipY,0, 90, bulletSpeed);
+        Bullet bullet1=new Bullet(this, bulletImage,shipX, shipY,30,120,bulletSpeed);
+        Bullet bullet2=new Bullet(this, bulletImage, shipX, shipY, 60, 150, bulletSpeed);
+        Bullet bullet3=new Bullet(this, bulletImage, shipX, shipY, 90, 180, bulletSpeed);
+        Bullet bullet4=new Bullet(this, bulletImage, shipX, shipY, 120, 210, bulletSpeed);
+        Bullet bullet5=new Bullet(this, bulletImage, shipX, shipY, 150, 240, bulletSpeed);
+        Bullet bullet6=new Bullet(this, bulletImage, shipX, shipY, 180, 270, bulletSpeed);
+        Bullet bullet7=new Bullet(this, bulletImage, shipX, shipY, 210, 300, bulletSpeed);
+        Bullet bullet8=new Bullet(this, bulletImage, shipX, shipY, 240, 330, bulletSpeed);
+        Bullet bullet9=new Bullet(this, bulletImage, shipX, shipY, 270, 0, bulletSpeed);
+        Bullet bullet10=new Bullet(this, bulletImage, shipX, shipY, 300, 30, bulletSpeed);
+        Bullet bullet11=new Bullet(this, bulletImage, shipX, shipY, 330, 60, bulletSpeed);
+
+        bullets.add(bullet0);
+        bullets.add(bullet1);
+        bullets.add(bullet2);
+        bullets.add(bullet3);
+        bullets.add(bullet4);
+        bullets.add(bullet5);
+        bullets.add(bullet6);
+        bullets.add(bullet7);
+        bullets.add(bullet8);
+        bullets.add(bullet9);
+        bullets.add(bullet10);
+        bullets.add(bullet11);
+
+        return bullets;
     }
 
     public boolean isDestroyed(){

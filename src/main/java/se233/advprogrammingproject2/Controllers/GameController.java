@@ -1,13 +1,20 @@
 package se233.advprogrammingproject2.Controllers;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
+import javafx.util.Duration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import se233.advprogrammingproject2.model.Bullet;
 import se233.advprogrammingproject2.model.PlayerShip;
 import se233.advprogrammingproject2.View.GameStage;
+
+import java.util.List;
 
 public class GameController {
     private Scene scene;
@@ -15,6 +22,8 @@ public class GameController {
     private GameLoop gameLoop;
     private PlayerShip playerShip;
     public static final Logger logger = LogManager.getLogger();
+    private static int shotsFired;
+    Timeline timeline;
 
     public GameController(Scene scene, GameStage gameStage){
         this.scene = scene;
@@ -64,10 +73,38 @@ public class GameController {
         scene.setOnKeyReleased(event -> gameStage.getKeys().remove(event.getCode()));
 
         scene.setOnMousePressed(e->{
+            //normal attack
             if(e.getButton()== MouseButton.SECONDARY && !playerShip.isDestroyed()){
                 System.out.println("mousePressed");
                 Bullet bullet = playerShip.shootBullet();
                 gameLoop.addPlayerBullet(bullet);
+            }
+
+            //special attack
+            if(e.getButton()==MouseButton.PRIMARY && !playerShip.isDestroyed() && GameStage.specialEnergy>=30){
+                GameStage.specialEnergy=0;
+                List<Bullet> bullets=playerShip.shootSpecialAttack();
+                gameLoop.addSpecialBullet(bullets);
+
+                shotsFired = 0;
+
+                timeline = new Timeline(new KeyFrame(Duration.seconds(0.5), new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(ActionEvent event) {
+                        if (shotsFired < 2) {
+                            List<Bullet> bullets = playerShip.shootSpecialAttack();
+                            gameLoop.addSpecialBullet(bullets);
+                            shotsFired++;
+                        } else {
+                            shotsFired = 0;
+                            timeline.stop();
+                        }
+                    }
+                }));
+
+                // Set the timeline to repeat 3 times
+                timeline.setCycleCount(2);
+                timeline.play();
             }
         });
     }
