@@ -8,6 +8,10 @@ public class EnemyShips extends Characters{
     protected int size;
     protected long enemyLastShotTime;
 
+    public EnemyShips(){
+
+    }
+
     public EnemyShips(Image image, double startX, double startY, double speed, PlayerShip playerShip) {
         super(new ImageView(image), startX, startY, speed, playerShip);
         this.imageView.setX(startX);

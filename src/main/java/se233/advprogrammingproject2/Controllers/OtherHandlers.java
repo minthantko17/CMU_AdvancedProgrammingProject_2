@@ -1,19 +1,11 @@
 package se233.advprogrammingproject2.Controllers;
 
-import javafx.geometry.Pos;
-import javafx.scene.Cursor;
-import javafx.scene.ImageCursor;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
-import javafx.scene.layout.*;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontPosture;
-import javafx.scene.text.FontWeight;
 import se233.advprogrammingproject2.Launcher;
 import se233.advprogrammingproject2.View.GameEnd;
+import se233.advprogrammingproject2.View.GamePrep;
 import se233.advprogrammingproject2.View.GameStage;
 import se233.advprogrammingproject2.View.MainMenu;
 
@@ -29,7 +21,7 @@ public class OtherHandlers {
 
         mainMenuScene.setOnKeyPressed(e -> {
             if(e.getCode() == KeyCode.ENTER){
-                OtherHandlers.changeToGameStage();
+                OtherHandlers.changeToGamePrepScreen();
             }
         });
     }
@@ -41,10 +33,16 @@ public class OtherHandlers {
         Launcher.primaryStage.setScene(gameScene);
     }
 
-    public static void gameEndScreen(GameLoop gameLoop){
+    public static void changeToGameEndScreen(GameLoop gameLoop){
         gameLoop.stop();
         GameEnd gameEndPane = new GameEnd();
         Scene scene = new Scene(gameEndPane, Launcher.WIDTH, Launcher.HEIGHT);
+        Launcher.primaryStage.setScene(scene);
+    }
+
+    public static void changeToGamePrepScreen(){
+        GamePrep gamePrepPane = new GamePrep();
+        Scene scene = new Scene(gamePrepPane, Launcher.WIDTH, Launcher.HEIGHT);
         Launcher.primaryStage.setScene(scene);
     }
 }

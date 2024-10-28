@@ -6,6 +6,7 @@ import javafx.scene.input.KeyCode;
 import se233.advprogrammingproject2.Controllers.GameController;
 import se233.advprogrammingproject2.Launcher;
 import se233.advprogrammingproject2.View.GameStage;
+import se233.advprogrammingproject2.util.AnimatedSprite;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +21,7 @@ public class PlayerShip extends Characters {
     private boolean isInvincible;
     private long invincibleStartTime;
     private long invincibleDuration = 3000;
+    private boolean isMoving;
 
 
     public PlayerShip(GameStage gameStage, Image image, double startX, double startY, KeyCode topKey, KeyCode rightKey, KeyCode bottomKey, KeyCode leftKey, double speed) {
@@ -47,6 +49,34 @@ public class PlayerShip extends Characters {
         isDestroyed=false;
         isInvincible=false;
 
+        isMoving=false;
+    }
+
+    public PlayerShip(GameStage gameStage, AnimatedSprite animatedSprite, double startX, double startY, KeyCode topKey, KeyCode rightKey, KeyCode bottomKey, KeyCode leftKey, double speed) {
+        life=3;
+
+        this.gameStage=gameStage;
+        this.startX=startX;
+        this.startY=startY;
+
+        this.currX= this.startX;
+        this.currY = this.startY;
+        this.speed=speed;
+
+        this.topKey=topKey;
+        this.rightKey=rightKey;
+        this.bottomKey=bottomKey;
+        this.leftKey=leftKey;
+        this.imageView=animatedSprite;
+
+        imageView.setPreserveRatio(true);
+        imageView.setFitWidth(50);
+        imageView.setX(this.startX);
+        imageView.setY(this.startY);
+
+        isDestroyed=false;
+        isInvincible=false;
+        isMoving=false;
     }
 
     public void update(){
@@ -90,6 +120,58 @@ public class PlayerShip extends Characters {
             this.stopVertical();
         }
     }
+
+    public void update(long now){
+        if (isInvincible()) {
+            long elapsedTime = System.currentTimeMillis() - invincibleStartTime;
+            imageView.setVisible(elapsedTime / 200 % 2 != 0);
+        } else {
+            imageView.setVisible(true);
+        }
+
+        ((AnimatedSprite)imageView).update(now);
+//        if(isMoving){
+//            ((AnimatedSprite)imageView).update(now);
+//        }else{
+//            ((AnimatedSprite)imageView).drawFirst();
+//        }
+
+        if(isDestroyed){
+            return;
+        }
+
+        boolean leftPressed= gameStage.getKeys().isPressed(this.leftKey);
+        boolean rightPressed= gameStage.getKeys().isPressed(this.rightKey);
+        boolean topPressed= gameStage.getKeys().isPressed(this.topKey);
+        boolean bottomPressed= gameStage.getKeys().isPressed(this.bottomKey);
+
+        if(leftPressed && rightPressed){
+            this.stopHorizontal();
+        }else if(leftPressed){
+            this.moveLeft();
+            this.moveHorizontal();
+        }else if(rightPressed){
+            this.moveRight();
+            this.moveHorizontal();
+        }else{
+            this.stopHorizontal();
+        }
+
+        if(topPressed && bottomPressed){
+            this.stopVertical();
+        }else if(topPressed){
+            this.moveTop();
+            this.moveVertical();
+        }else if(bottomPressed){
+            this.moveBottom();
+            this.moveVertical();
+        }else{
+            this.stopVertical();
+        }
+    }
+
+
+
 
     //---------movements---------
     public void moveLeft(){
@@ -190,6 +272,8 @@ public class PlayerShip extends Characters {
         return bullets;
     }
 
+    //need to add special att for ship2
+
     public boolean isDestroyed(){
         return isDestroyed;
     }
@@ -222,6 +306,13 @@ public class PlayerShip extends Characters {
     }
     public double getCurrY(){
         return this.currY;
+    }
+
+    public void setIsMoving(boolean isMoving){
+        this.isMoving=isMoving;
+    };
+    public boolean isMoving(){
+        return isMoving;
     }
 
 }

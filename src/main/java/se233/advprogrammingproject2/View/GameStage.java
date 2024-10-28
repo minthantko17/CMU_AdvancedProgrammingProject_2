@@ -10,7 +10,8 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import se233.advprogrammingproject2.model.Keys;
+import se233.advprogrammingproject2.util.AnimatedSprite;
+import se233.advprogrammingproject2.util.Keys;
 import se233.advprogrammingproject2.model.PlayerShip;
 import se233.advprogrammingproject2.Launcher;
 
@@ -28,6 +29,7 @@ public class GameStage extends Pane {
     public static Rectangle bossHpBarBorder;
     HBox playerLifeHBox;
     Image playerShipImgMini;
+    Image shipImage;
 
     public GameStage(){
         setUpGame();
@@ -81,7 +83,25 @@ public class GameStage extends Pane {
 
         keys=new Keys();
         playerShipImg=new Image(Launcher.class.getResourceAsStream("assets/playerShip1_red.png"));
-        playerShip=new PlayerShip( this, playerShipImg, Launcher.WIDTH/2 -25, Launcher.HEIGHT/2 -20, KeyCode.W, KeyCode.D, KeyCode.S, KeyCode.A, 5);
+//        playerShip=new PlayerShip( this, playerShipImg, Launcher.WIDTH/2 -25, Launcher.HEIGHT/2 -20, KeyCode.W, KeyCode.D, KeyCode.S, KeyCode.A, 5);
+
+        if(Launcher.choosenShip==2){
+            AnimatedSprite animatedSprite=new AnimatedSprite(
+                    new Image(Launcher.class.getResourceAsStream("assets/player.png")),
+                    100, 100, 6, 150
+            );
+            playerShip=new PlayerShip(this, animatedSprite,
+                    Launcher.WIDTH/2 -25, Launcher.HEIGHT/2 -20, KeyCode.W, KeyCode.D, KeyCode.S, KeyCode.A, 5);
+        }else{  //need to update with new ship2 image
+            AnimatedSprite animatedSprite=new AnimatedSprite(
+                    new Image(Launcher.class.getResourceAsStream("assets/player.png")),
+                    100, 100, 6, 150
+            );
+            playerShip=new PlayerShip(this, animatedSprite,
+                    Launcher.WIDTH/2 -25, Launcher.HEIGHT/2 -20, KeyCode.W, KeyCode.D, KeyCode.S, KeyCode.A, 5);
+        }
+
+
 
         playerLifeHBox = new HBox();
         playerShipImgMini=new Image(Launcher.class.getResourceAsStream("assets/playerShip1_red.png"));

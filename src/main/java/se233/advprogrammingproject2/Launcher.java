@@ -16,6 +16,7 @@ public class Launcher extends Application {
     public static Stage primaryStage;
     public static boolean isGameOver = false;
     public static boolean isVictory = false;
+    public static int choosenShip=1;
 
     public void start(Stage stage) {
         primaryStage=stage;
@@ -31,7 +32,7 @@ public class Launcher extends Application {
 
         mainMenuScene.setOnKeyPressed(e -> {
             if(e.getCode() == KeyCode.ENTER){
-                OtherHandlers.changeToGameStage();
+                OtherHandlers.changeToGamePrepScreen();
             }
         });
     }

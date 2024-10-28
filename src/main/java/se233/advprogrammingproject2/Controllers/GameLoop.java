@@ -1,15 +1,11 @@
 package se233.advprogrammingproject2.Controllers;
 
 import javafx.animation.AnimationTimer;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.image.Image;
-import javafx.util.Duration;
 import se233.advprogrammingproject2.Launcher;
 import se233.advprogrammingproject2.model.*;
 import se233.advprogrammingproject2.View.GameStage;
+import se233.advprogrammingproject2.util.AnimatedSprite;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -31,6 +27,7 @@ public class GameLoop extends AnimationTimer {
     private int asteroidRound;
     private boolean bossSpawn;
     private boolean bossDead;
+//    private AnimatedSprite largeEnemySprite;
 
 
     public GameLoop(GameStage gameStage, PlayerShip playerShip) {
@@ -60,12 +57,19 @@ public class GameLoop extends AnimationTimer {
 
             updateAndCollidePlayerBullet();
             updateAndCollidePlayerSpecialAttack();
-            updateAndCollidePlayerShip();
+            updateAndCollidePlayerShip(now);
             for (Asteroids asteroid : asteroids) {
                 asteroid.update();
             }
             for (EnemyShips e: enemyShips){
-                e.update();
+                if(e instanceof LargeEnemyShip){
+                    ((LargeEnemyShip) e).update(now);
+                }else if(e instanceof SmallEnemyShip){
+                    ((SmallEnemyShip) e).update(now);
+                }else{
+                    e.update();
+                }
+
             }
 
             //Spawn again
@@ -112,8 +116,8 @@ public class GameLoop extends AnimationTimer {
                     GameStage.bossHpBarBorder.setVisible(true);
                     GameStage.bossHpBar.setVisible(true);
                     GameStage.bossHpBar.setWidth(bossShip.getBossHP()*4);
-                    bossShip.update();
-                    if(bossShip.canShoot(now/1000000, 3000)){
+                    bossShip.update(now);
+                    if(bossShip.canShoot(now/1000000, 2000)){
                         addAndShootBossBullet();
                     }
                     updateBossBullets();
@@ -123,7 +127,7 @@ public class GameLoop extends AnimationTimer {
             //Game Victory and End
             if(enemyShips.isEmpty() && asteroids.isEmpty() && bossDead){
                 Launcher.isVictory=true;
-                OtherHandlers.gameEndScreen(this);
+                OtherHandlers.changeToGameEndScreen(this);
             }
         }
     }
@@ -205,10 +209,14 @@ public class GameLoop extends AnimationTimer {
                     startY=Math.random()*(Launcher.HEIGHT-40);
                 }
 
-                EnemyShips smallEnemyShips=new SmallEnemyShip(
-                        new Image(Launcher.class.getResourceAsStream("assets/enemyBlack1.png")),
-                        startX, startY, 1.5, playerShip
-                );
+//                EnemyShips smallEnemyShips=new SmallEnemyShip(
+//                        new Image(Launcher.class.getResourceAsStream("assets/enemyBlack1.png")),
+//                        startX, startY, 1.5, playerShip
+//                );
+                Image smallEnamyImage=new Image(Launcher.class.getResourceAsStream("assets/SmallEnemy.png"));
+                AnimatedSprite smallEnemySprite=new AnimatedSprite(smallEnamyImage, 520, 520, 4, 250);
+                EnemyShips smallEnemyShips=new SmallEnemyShip(smallEnemySprite, startX, startY, 1.5, playerShip);
+
                 enemyShips.add(smallEnemyShips);
                 gameStage.getChildren().add(smallEnemyShips.getImageView());
             }
@@ -216,16 +224,18 @@ public class GameLoop extends AnimationTimer {
             for (int i=0; i<4 ; i++){
                 double startX;
                 double startY;
-                startX=((int)(Math.random()*2))*(Launcher.WIDTH-40) ;
-//                startX=Launcher.WIDTH;
-                startY=Math.random()*(Launcher.HEIGHT-40);
+                startX=((int)(Math.random()*2))*(Launcher.WIDTH-60) ;
+                startY=Math.random()*(Launcher.HEIGHT-60);
 
-                EnemyShips largeEnemyShips=new LargeEnemyShip(
-                        new Image(Launcher.class.getResourceAsStream("assets/ufo.png")),
-                        startX, startY,
-                        1.5,
-                        playerShip
-                );
+//                EnemyShips largeEnemyShips=new LargeEnemyShip(
+//                        new Image(Launcher.class.getResourceAsStream("assets/ufo.png")),
+//                        startX, startY,
+//                        1.5, playerShip
+//                );
+                Image largeEnemyImage=new Image(Launcher.class.getResourceAsStream("assets/LargeEnemy.png"));
+                AnimatedSprite largeEnemySprite=new AnimatedSprite(largeEnemyImage, 520, 330, 3, 250);
+                EnemyShips largeEnemyShips=new LargeEnemyShip(largeEnemySprite, startX, startY, 1.5, playerShip);
+
                 enemyShips.add(largeEnemyShips);
                 gameStage.getChildren().add(largeEnemyShips.getImageView());
             }
@@ -235,9 +245,12 @@ public class GameLoop extends AnimationTimer {
     public void spawnBoss(){
         double startX=(Launcher.WIDTH/2)-50;
         double startY=-50;
-        Image bossShipImg=new Image(Launcher.class.getResourceAsStream("assets/ufoBoss.png"));
+//        Image bossShipImg=new Image(Launcher.class.getResourceAsStream("assets/ufoBoss.png"));
+//        bossShip = new Boss(bossShipImg, startX, startY, 3, playerShip);
 
-        bossShip = new Boss(bossShipImg, startX, startY, 3, playerShip);
+        Image bossImage=new Image(Launcher.class.getResourceAsStream("assets/FinalBoss.png"));
+        AnimatedSprite largeEnemySprite=new AnimatedSprite(bossImage, 512, 254, 3, 250);
+        bossShip=new Boss(largeEnemySprite, startX, startY, 3, playerShip);
 
         gameStage.getChildren().add(bossShip.getImageView());
     }
@@ -287,14 +300,18 @@ public class GameLoop extends AnimationTimer {
                         isBulletRemoved=true;
                     }
 
+                    AnimatedSprite animatedSprite=new AnimatedSprite(
+                            new Image(Launcher.class.getResourceAsStream("assets/explosionTemp.png")),
+                            100, 100, 4, 25
+                    );
                     gameStage.getChildren().remove(asteroid.getImageView());
                     asteroidsIterator.remove();
 
-                    asteroid.explode();
                     if(asteroid.getSize()>60) {
                         List<Asteroids> smallerAsteroids=asteroid.spawnSmaller(asteroidX, asteroidY, 60);
                         newAsteroids.addAll(smallerAsteroids);      //to avoid ConcurrentModificationException
                     }
+                    asteroid.explode(animatedSprite, gameStage);
                     break;
                 }
             }
@@ -328,6 +345,11 @@ public class GameLoop extends AnimationTimer {
                         isBulletRemoved=true;
                     }
 
+                    AnimatedSprite animatedSprite=new AnimatedSprite(
+                            new Image(Launcher.class.getResourceAsStream("assets/explosionTemp.png")),
+                            100, 100, 4, 50
+                    );
+                    enemyShip.explode(animatedSprite, gameStage);
                     gameStage.getChildren().remove(enemyShip.getImageView());
                     enemyShipsIterator.remove();
                     break;
@@ -388,12 +410,15 @@ public class GameLoop extends AnimationTimer {
 
                     gameStage.getChildren().remove(asteroid.getImageView());
                     asteroidsIterator.remove();
-
-                    asteroid.explode();
                     if(asteroid.getSize()>60) {
                         List<Asteroids> smallerAsteroids=asteroid.spawnSmaller(asteroidX, asteroidY, 60);
                         newAsteroids.addAll(smallerAsteroids);      //to avoid ConcurrentModificationException
                     }
+                    AnimatedSprite animatedSprite=new AnimatedSprite(
+                            new Image(Launcher.class.getResourceAsStream("assets/explosionTemp.png")),
+                            100, 100, 4, 50
+                    );
+                    asteroid.explode(animatedSprite, gameStage);
                     break;
                 }
             }
@@ -416,6 +441,12 @@ public class GameLoop extends AnimationTimer {
                         playerSpecialBulletIterator.remove();
                         isBulletRemoved=true;
                     }
+
+                    AnimatedSprite animatedSprite=new AnimatedSprite(
+                            new Image(Launcher.class.getResourceAsStream("assets/explosionTemp.png")),
+                            100, 100, 4, 50
+                    );
+                    enemyShip.explode(animatedSprite, gameStage);
 
                     gameStage.getChildren().remove(enemyShip.getImageView());
                     enemyShipsIterator.remove();
@@ -444,8 +475,8 @@ public class GameLoop extends AnimationTimer {
     }
 
     //PlayerShip
-    private void updateAndCollidePlayerShip(){
-        playerShip.update();
+    private void updateAndCollidePlayerShip(long now){
+        playerShip.update(now);
         if(!playerShip.isDestroyed() && !playerShip.isInvincible()){
 
             //asteroid
@@ -453,7 +484,11 @@ public class GameLoop extends AnimationTimer {
             while (asteroidsIterator.hasNext()){
                 Asteroids asteroid=asteroidsIterator.next();
                 if(playerShip.checkCollision(asteroid)){
-                    playerShip.explode();
+                    AnimatedSprite animatedSprite=new AnimatedSprite(
+                            new Image(Launcher.class.getResourceAsStream("assets/explosionTemp.png")),
+                            100, 100, 4, 50
+                    );
+                    playerShip.explode(animatedSprite, gameStage);
                     playerShip.destroy();
                     gameStage.getChildren().remove(playerShip.getImageView());
                     break;
@@ -469,7 +504,11 @@ public class GameLoop extends AnimationTimer {
                     gameStage.getChildren().remove(enemyShip.getImageView());
                     enemyShipsIterator.remove();
 
-                    playerShip.explode();
+                    AnimatedSprite animatedSprite=new AnimatedSprite(
+                            new Image(Launcher.class.getResourceAsStream("assets/explosionTemp.png")),
+                            100, 100, 4, 50
+                    );
+                    playerShip.explode(animatedSprite, gameStage);
                     playerShip.destroy();
                     gameStage.getChildren().remove(playerShip.getImageView());
 
@@ -484,7 +523,11 @@ public class GameLoop extends AnimationTimer {
                     gameStage.getChildren().remove(enemyBullet.getImageView());
                     enemyBulletsIterator.remove();
 
-                    playerShip.explode();
+                    AnimatedSprite animatedSprite=new AnimatedSprite(
+                            new Image(Launcher.class.getResourceAsStream("assets/explosionTemp.png")),
+                            100, 100, 4, 50
+                    );
+                    playerShip.explode(animatedSprite, gameStage);
                     playerShip.destroy();
                     gameStage.getChildren().remove(playerShip.getImageView());
 
@@ -525,7 +568,7 @@ public class GameLoop extends AnimationTimer {
             //game over action
             System.out.println("Game Over");
             Launcher.isGameOver=true;
-            OtherHandlers.gameEndScreen(this);
+            OtherHandlers.changeToGameEndScreen(this);
         }
 
     }

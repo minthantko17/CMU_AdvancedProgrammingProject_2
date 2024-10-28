@@ -1,8 +1,12 @@
 package se233.advprogrammingproject2.model;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.scene.image.ImageView;
+import javafx.util.Duration;
 import se233.advprogrammingproject2.Launcher;
 import se233.advprogrammingproject2.View.GameStage;
+import se233.advprogrammingproject2.util.AnimatedSprite;
 
 public abstract class Characters extends ImageView {
     protected double startX;
@@ -13,8 +17,10 @@ public abstract class Characters extends ImageView {
     protected GameStage gameStage;
     protected double speed;
     protected PlayerShip playerShip;
+    protected boolean isExploding;
 
     protected Characters(){
+        this.isExploding=false;
     }
 
     protected Characters(ImageView imageView, double speed, int directionAngle){
@@ -29,6 +35,7 @@ public abstract class Characters extends ImageView {
         this.startY=startY;
         this.speed = speed;
         this.playerShip=playerShip;
+        this.isExploding=false;
     }
 
     protected Characters(ImageView imageView, double startX, double startY, double speed, int directionAngle){
@@ -63,6 +70,30 @@ public abstract class Characters extends ImageView {
         //explode
         System.out.println("Exploded");
         //remove imageview from gameStage
+
+    }
+
+    public void explode(AnimatedSprite animatedSprite, GameStage gameStage){
+        this.gameStage=gameStage;
+        if(isExploding){ return; }
+        isExploding=true;
+
+        AnimatedSprite explosionAnimation=animatedSprite;
+        explosionAnimation.setX(imageView.getX());
+        explosionAnimation.setY(imageView.getY());
+        explosionAnimation.setPreserveRatio(true);
+        explosionAnimation.setFitWidth(imageView.getFitWidth());
+        gameStage.getChildren().add(explosionAnimation);
+
+        Timeline explosionTime=new Timeline(new KeyFrame(Duration.millis(100), e -> explosionAnimation.update(System.nanoTime())));
+        explosionTime.setCycleCount(4);
+        explosionTime.setOnFinished(e->{
+            gameStage.getChildren().remove(explosionAnimation);
+            isExploding=false;
+//            this.remove();
+        });
+        explosionTime.play();
+
     }
 
     public void remove(){
@@ -73,4 +104,10 @@ public abstract class Characters extends ImageView {
         return imageView;
     }
 
+    public boolean isExploding(){
+        return isExploding;
+    }
+    public void setExploding(boolean isExploding){
+        this.isExploding=isExploding;
+    }
 }

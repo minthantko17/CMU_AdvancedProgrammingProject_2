@@ -2,6 +2,7 @@ package se233.advprogrammingproject2.model;
 
 import javafx.scene.image.Image;
 import se233.advprogrammingproject2.Launcher;
+import se233.advprogrammingproject2.util.AnimatedSprite;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,9 +31,43 @@ public class Boss extends EnemyShips{
         enemyLastShotTime=0;
     }
 
+    public Boss(AnimatedSprite animatedSprite, double startX, double startY, double speed, PlayerShip playerShip) {
+        this.imageView=animatedSprite;
+        this.imageView.setX(startX);
+        this.imageView.setY(startY);
+
+        curX=startX;
+        curY=startY;
+        bossHP=50;
+
+        this.targetX=playerShip.getCurrX();
+        this.targetY=playerShip.getCurrY();
+        this.movementDirectionAngle = 0; //movement direction angle
+        targetDirectionAngle=(int)Math.toDegrees(Math.atan2(this.targetY-this.getY(), this.targetX-this.getX()));
+
+        this.size=100;
+        this.imageView.setPreserveRatio(true);
+        this.imageView.setFitWidth(size);
+
+        this.speed=speed;
+        this.playerShip=playerShip;
+
+        enemyLastShotTime=0;
+    }
+
     @Override
     public void update(){
         //move horizontally
+        if(curX< 0 || curX+100 > Launcher.WIDTH){
+            movementDirectionAngle=(movementDirectionAngle+180)%360;
+        }
+        double deltaX= speed*Math.cos(Math.toRadians(movementDirectionAngle));
+        curX=curX+deltaX;
+        imageView.setX(curX);
+    }
+
+    public void update(long now){
+        ((AnimatedSprite)imageView).update(now);
         if(curX< 0 || curX+100 > Launcher.WIDTH){
             movementDirectionAngle=(movementDirectionAngle+180)%360;
         }

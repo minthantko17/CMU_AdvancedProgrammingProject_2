@@ -1,4 +1,4 @@
-package se233.advprogrammingproject2.model;
+package se233.advprogrammingproject2.util;
 
 import javafx.scene.input.KeyCode;
 
