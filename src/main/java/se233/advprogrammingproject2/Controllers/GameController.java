@@ -23,7 +23,7 @@ public class GameController {
     private GameStage gameStage;
     private GameLoop gameLoop;
     private PlayerShip playerShip;
-    public static final Logger logger = LogManager.getLogger();
+    public static final Logger logger = LogManager.getLogger(GameController.class);
     private static int shotsFired;
     Timeline timeline;
 
@@ -86,8 +86,7 @@ public class GameController {
             }
 
             //special attack
-            if(e.getButton()==MouseButton.PRIMARY && !playerShip.isDestroyed()){
-                // && GameStage.specialEnergy>=30
+            if(e.getButton()==MouseButton.PRIMARY && !playerShip.isDestroyed() && GameStage.specialEnergy>=30){
                 GameStage.specialEnergy=0;
 
                 //FOR SHIP2

@@ -7,6 +7,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
+import javafx.scene.effect.BlendMode;
 import javafx.scene.image.Image;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
@@ -169,14 +170,21 @@ public class GameLoop extends AnimationTimer {
                     for(Bullet b: bossBullets){
                         gameStage.getChildren().remove(b.getImageView());
                     }
-                    gameStage.getChildren().remove(bossShip.getImageView());
-                    Timeline timeline=new Timeline(new KeyFrame(Duration.seconds(2), new EventHandler<ActionEvent>() {
-                        @Override
-                        public void handle(ActionEvent event) {
-                            System.out.println("wait 2 sec");
-                        }
-                    }));
-                    timeline.setOnFinished(e->OtherHandlers.changeToGameEndScreen(this));
+//                    Timeline timeline=new Timeline(new KeyFrame(Duration.seconds(2), new EventHandler<ActionEvent>() {
+//                        @Override
+//                        public void handle(ActionEvent event) {
+//                            System.out.println("wait 2 sec");
+//                        }
+//                    }));
+                    Timeline timeline = new Timeline(
+                            new KeyFrame(Duration.millis(50), e ->bossShip.getImageView().setBlendMode(BlendMode.RED)),
+                            new KeyFrame(Duration.millis(100), e ->bossShip.getImageView().setBlendMode(null))
+                    );
+                    timeline.setCycleCount(15);
+                    timeline.setOnFinished(e->{
+                        gameStage.getChildren().remove(bossShip.getImageView());
+                        OtherHandlers.changeToGameEndScreen(this);
+                    });
                     timeline.play();
                 }
             }
@@ -417,9 +425,17 @@ public class GameLoop extends AnimationTimer {
             }
 
             if(bossSpawn && bossShip.checkCollision(playerBullet)){
+                bossShip.getImageView().setBlendMode(BlendMode.RED);
+                Timeline flashTimeline = new Timeline(
+                        new KeyFrame(Duration.millis(100), e -> bossShip.getImageView().setBlendMode(null))
+                );
+                flashTimeline.setCycleCount(1);
+                flashTimeline.play();
+
                 bossShip.setBossHP(bossShip.getBossHP()-1);
                 GameStage.bossHpLabel.setText("Boss HP: "+bossShip.getBossHP());
                 GameStage.bossHpBar.setWidth(bossShip.getBossHP()*4);
+
                 if(bossShip.getBossHP()<=0){
                     bossDead=true;
                     GameStage.score=GameStage.score+50;
@@ -515,6 +531,13 @@ public class GameLoop extends AnimationTimer {
             }
 
             if(bossSpawn && bossShip.checkCollision(playerSpecialBullet)){
+                bossShip.getImageView().setBlendMode(BlendMode.RED);
+                Timeline flashTimeline = new Timeline(
+                        new KeyFrame(Duration.millis(100), e -> bossShip.getImageView().setBlendMode(null))
+                );
+                flashTimeline.setCycleCount(1);
+                flashTimeline.play();
+
                 bossShip.setBossHP(bossShip.getBossHP()-1);
                 GameStage.bossHpLabel.setText("Boss HP: "+bossShip.getBossHP());
                 GameStage.bossHpBar.setWidth(bossShip.getBossHP()*4);
