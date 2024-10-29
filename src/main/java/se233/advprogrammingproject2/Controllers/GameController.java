@@ -56,7 +56,7 @@ public class GameController {
             double angle=Math.toDegrees(Math.atan2(mouseY-centerY, mouseX-centerX));
 
             playerShip.getImageView().setRotate(angle +90);
-            logger.info("angle: {}, rotatedangle: {}",angle, playerShip.getImageView().getRotate());
+            logger.debug("angle: {}, rotatedangle: {}",angle, playerShip.getImageView().getRotate());
         });
     }
 
@@ -64,7 +64,7 @@ public class GameController {
         scene.setOnKeyPressed(e->{
             playerShip.setIsMoving(true);
             if(e.getCode()== KeyCode.SPACE && !playerShip.isDestroyed()){
-                System.out.println("keyPressed");
+//                System.out.println("keyPressed");
                 Bullet bullet = playerShip.shootBullet();
                 gameLoop.addPlayerBullet(bullet);
             }else {
@@ -80,9 +80,10 @@ public class GameController {
         scene.setOnMousePressed(e->{
             //normal attack
             if(e.getButton()== MouseButton.SECONDARY && !playerShip.isDestroyed()){
-                System.out.println("mousePressed");
+//                System.out.println("mousePressed");
                 Bullet bullet = playerShip.shootBullet();
                 gameLoop.addPlayerBullet(bullet);
+                logger.debug("PlayerShip shoot bullet");
             }
 
             //special attack
@@ -110,6 +111,7 @@ public class GameController {
                     chargeUpTimeLine.setCycleCount(6);
 
                     chargeUpTimeLine.setOnFinished(event->{
+                        logger.info("PlayerShip shoot special attack 2");
                         gameStage.getChildren().remove(chargeUp);
                         //slow all objects
                         List<EnemyShips> enemyShipsTemp=gameLoop.enemyShips;
@@ -132,7 +134,7 @@ public class GameController {
                         timeline = new Timeline(new KeyFrame(Duration.seconds(3), new EventHandler<ActionEvent>() {
                             @Override
                             public void handle(ActionEvent event) {
-                                System.out.println("wait 3 sec");
+//                                System.out.println("wait 3 sec");
                             }
                         }));
                         timeline.setCycleCount(1);
@@ -155,6 +157,7 @@ public class GameController {
 
                 //for ship1
                 else{ //chosenShip==1
+
                     shotsFired = 0;
                     //chargeUp
                     AnimatedSprite chargeUp=new AnimatedSprite(
@@ -174,6 +177,7 @@ public class GameController {
                     chargeUpTimeLine.setCycleCount(6);
 
                     chargeUpTimeLine.setOnFinished(event->{
+                        logger.info("PlayerShip shoot special attack 1");
                         gameStage.getChildren().remove(chargeUp);
 
                         //fire 3 times
@@ -184,6 +188,7 @@ public class GameController {
                                     List<Bullet> bullets = playerShip.shootSpecialAttack();
                                     gameLoop.addPlayerSpecialBullet(bullets);
                                     shotsFired++;
+
                                 } else {
                                     shotsFired = 0;
                                     timeline.stop();

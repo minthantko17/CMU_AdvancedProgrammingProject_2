@@ -28,6 +28,7 @@ public class Launcher extends Application {
         Scene mainMenuScene = new Scene(mainMenu, WIDTH, HEIGHT);
 
         primaryStage.setScene(mainMenuScene);
+        primaryStage.setResizable(false);
         primaryStage.show();
 
         mainMenuScene.setOnKeyPressed(e -> {

@@ -3,6 +3,8 @@ package se233.advprogrammingproject2.model;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import se233.advprogrammingproject2.Controllers.GameController;
 import se233.advprogrammingproject2.Launcher;
 import se233.advprogrammingproject2.View.GameStage;
@@ -12,6 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PlayerShip extends Characters {
+
+    public static final Logger logger = LogManager.getLogger(PlayerShip.class);
     double currX;
     double currY;
     KeyCode topKey, rightKey, bottomKey, leftKey;
@@ -132,22 +136,22 @@ public class PlayerShip extends Characters {
     public void moveLeft(){
         isMoveLeft=true;
         isMoveRight=false;
-        GameController.logger.info("Moving Left");
+        PlayerShip.logger.debug("Moving Left");
     }
     public void moveRight(){
         isMoveRight=true;
         isMoveLeft=false;
-        GameController.logger.info("Moving Right");
+        PlayerShip.logger.debug("Moving Right");
     }
     public void moveTop(){
         isMoveTop=true;
         isMoveBottom=false;
-        GameController.logger.info("Moving Top");
+        PlayerShip.logger.debug("Moving Top");
     }
     public void moveBottom(){
         isMoveBottom=true;
         isMoveTop=false;
-        GameController.logger.info("Moving Bottom");
+        PlayerShip.logger.debug("Moving Bottom");
     }
 
     public void stopHorizontal(){

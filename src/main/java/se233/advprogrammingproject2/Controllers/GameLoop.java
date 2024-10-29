@@ -167,6 +167,7 @@ public class GameLoop extends AnimationTimer {
                 //Game Victory and End
                 if(enemyShips.isEmpty() && asteroids.isEmpty() && bossDead){
                     Launcher.isVictory=true;
+                    GameController.logger.info("Victory");
                     for(Bullet b: bossBullets){
                         gameStage.getChildren().remove(b.getImageView());
                     }
@@ -206,9 +207,9 @@ public class GameLoop extends AnimationTimer {
     // ------ADDING TO GAME STAGE------
     public void addPlayerBullet(Bullet bullet) throws NullPointerException, IllegalStateException {
         playerBullets.add(bullet);
-        System.out.println("bullet added"+ playerBullets.size());
+//        System.out.println("bullet added"+ playerBullets.size());
         gameStage.getChildren().addAll(bullet.getImageView());
-        System.out.println("bullet added to GS"+ gameStage.getChildren().size());
+//        System.out.println("bullet added to GS"+ gameStage.getChildren().size());
     }
 
     public void addPlayerSpecialBullet(List<Bullet> specialBullets) throws NullPointerException, IllegalStateException {
@@ -349,12 +350,14 @@ public class GameLoop extends AnimationTimer {
                     asteroid.collide(playerBullet);
                     if(asteroid.getSize()>60){
                         GameStage.score=GameStage.score+2;
+                        GameController.logger.info("Current Score: {}", GameStage.score);
                         GameStage.specialEnergy=GameStage.specialEnergy+2;
                         if(GameStage.specialEnergy>30){
                             GameStage.specialEnergy=30;
                         }
                     }else{
                         GameStage.score=GameStage.score+1;
+                        GameController.logger.info("Current Score: {}", GameStage.score);
                         GameStage.specialEnergy=GameStage.specialEnergy+1;
                         if(GameStage.specialEnergy>30){
                             GameStage.specialEnergy=30;
@@ -394,12 +397,14 @@ public class GameLoop extends AnimationTimer {
 //                    enemyShip.collide(playerBullet);
                     if(enemyShipType==0){
                         GameStage.score=GameStage.score+1;
+                        GameController.logger.info("Current Score: {}", GameStage.score);
                         GameStage.specialEnergy=GameStage.specialEnergy+1;
                         if(GameStage.specialEnergy>30){
                             GameStage.specialEnergy=30;
                         }
                     }else{
                         GameStage.score=GameStage.score+2;
+                        GameController.logger.info("Current Score: {}", GameStage.score);
                         GameStage.specialEnergy=GameStage.specialEnergy+2;
                         if(GameStage.specialEnergy>30){
                             GameStage.specialEnergy=30;
@@ -439,6 +444,7 @@ public class GameLoop extends AnimationTimer {
                 if(bossShip.getBossHP()<=0){
                     bossDead=true;
                     GameStage.score=GameStage.score+50;
+                    GameController.logger.info("Current Score: {}", GameStage.score);
                     gameStage.getChildren().remove(bossShip);
                 }
                 if (!isBulletRemoved) {
@@ -473,8 +479,10 @@ public class GameLoop extends AnimationTimer {
                     asteroid.collide(playerSpecialBullet);
                     if(asteroid.getSize()>60){
                         GameStage.score=GameStage.score+2;
+                        GameController.logger.info("Current Score: {}", GameStage.score);
                     }else{
                         GameStage.score=GameStage.score+1;
+                        GameController.logger.info("Current Score: {}", GameStage.score);
                     }
 
                     //if illegal state exception occurs, add boolean value to check playerBullet is already removed or not
@@ -508,8 +516,10 @@ public class GameLoop extends AnimationTimer {
 //                    enemyShip.collide(playerBullet);
                     if(enemyShipType==0){
                         GameStage.score=GameStage.score+1;
+                        GameController.logger.info("Current Score: {}", GameStage.score);
                     }else{
                         GameStage.score=GameStage.score+2;
+                        GameController.logger.info("Current Score: {}", GameStage.score);
                     }
 
                     if (!isBulletRemoved) {
@@ -549,6 +559,7 @@ public class GameLoop extends AnimationTimer {
                 if(bossShip.getBossHP()<=0){
                     bossDead=true;
                     GameStage.score=GameStage.score+50;
+                    GameController.logger.info("Current Score: {}", GameStage.score);
                     gameStage.getChildren().remove(bossShip);
                 }
                 break;
@@ -567,6 +578,7 @@ public class GameLoop extends AnimationTimer {
             while (asteroidsIterator.hasNext()){
                 Asteroids asteroid=asteroidsIterator.next();
                 if(playerShip.checkCollision(asteroid)){
+                    PlayerShip.logger.info("PlayerShip collided with asteroid");
                     AnimatedSprite animatedSprite=new AnimatedSprite(
                             new Image(Launcher.class.getResourceAsStream("assets/explosionTemp.png")),
                             100, 100, 4, 50
@@ -583,7 +595,7 @@ public class GameLoop extends AnimationTimer {
                 EnemyShips enemyShip=enemyShipsIterator.next();
                 if(playerShip.checkCollision(enemyShip)){
                     //enemyShip.collide()
-
+                    PlayerShip.logger.info("PlayerShip collided with enemy ship");
                     gameStage.getChildren().remove(enemyShip.getImageView());
                     enemyShipsIterator.remove();
 
@@ -603,6 +615,7 @@ public class GameLoop extends AnimationTimer {
             while(enemyBulletsIterator.hasNext()){
                 Bullet enemyBullet=enemyBulletsIterator.next();
                 if(playerShip.checkCollision(enemyBullet)){
+                    PlayerShip.logger.info("PlayerShip collided with enemy bullet");
                     gameStage.getChildren().remove(enemyBullet.getImageView());
                     enemyBulletsIterator.remove();
 
@@ -620,6 +633,7 @@ public class GameLoop extends AnimationTimer {
 
             if(bossShip!=null){
                 if(playerShip.checkCollision(bossShip)){
+                    PlayerShip.logger.info("PlayerShip collided with boss ship");
                     playerShip.explode();
                     playerShip.destroy();
                     gameStage.getChildren().remove(playerShip.getImageView());
@@ -629,6 +643,7 @@ public class GameLoop extends AnimationTimer {
                 while(bossBulletsIterator.hasNext()){
                     Bullet bossBullet=bossBulletsIterator.next();
                     if(playerShip.checkCollision(bossBullet)){
+                        PlayerShip.logger.info("PlayerShip collided with boss bullet");
                         gameStage.getChildren().remove(bossBullet.getImageView());
                         bossBulletsIterator.remove();
 
@@ -646,10 +661,12 @@ public class GameLoop extends AnimationTimer {
             playerShip.respawn();
             gameStage.updatePlayerLifeIcon();
             gameStage.getChildren().add(playerShip.getImageView());
-            System.out.println("remaining life: "+playerShip.getLife());
+//            System.out.println("remaining life: "+playerShip.getLife());
+            PlayerShip.logger.info("Remaining Life: {}", playerShip.getLife());
         }else if(playerShip.isDestroyed() && playerShip.getLife()<=0){
             //game over action
-            System.out.println("Game Over");
+//            System.out.println("Game Over");
+            PlayerShip.logger.info("Game Over");
             Launcher.isGameOver=true;
             OtherHandlers.changeToGameEndScreen(this);
         }

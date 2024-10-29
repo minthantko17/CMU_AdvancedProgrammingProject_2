@@ -61,7 +61,8 @@ public abstract class Characters extends ImageView {
 
     public void collide(Characters obj){
         if(this instanceof Asteroids && obj instanceof Bullet){
-            System.out.println("Collided");
+//            System.out.println("Collided");
+
             this.explode();
             this.remove();
         }
@@ -69,7 +70,8 @@ public abstract class Characters extends ImageView {
 
     public void explode(){
         //explode
-        System.out.println("Exploded");
+//        System.out.println("Exploded");
+//        PlayerShip.logger.warn("PlayerShip exploded!!!");
         //remove imageview from gameStage
 
     }
@@ -98,7 +100,7 @@ public abstract class Characters extends ImageView {
     }
 
     public void remove(){
-        System.out.println("Removed");
+//        System.out.println("Removed");
     }
 
     public ImageView getImageView(){
