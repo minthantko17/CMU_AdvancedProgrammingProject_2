@@ -11,6 +11,7 @@ import java.util.List;
 public class Asteroids extends Characters{
     private double rotationSpeed;
     private int size;
+    double initSpeed;
 
     public Asteroids(GameStage gameStage,Image image, double startX, double startY, double speed, int directionAngle, double rotationSpeed, int size) {
         super(new ImageView(image), startX, startY, speed, directionAngle);
@@ -21,6 +22,7 @@ public class Asteroids extends Characters{
         this.imageView.setFitWidth(size);
         this.imageView.setPreserveRatio(true);
         this.rotationSpeed = rotationSpeed;
+        this.initSpeed = speed;
     }
 
     @Override
@@ -74,4 +76,12 @@ public class Asteroids extends Characters{
     public int getSize(){
         return size;
     }
+
+    public void setSpeed(double speed){
+        this.speed=speed;
+    }
+    public void setBackInitSpeed(){
+        this.speed=initSpeed;
+    }
+
 }

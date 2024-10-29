@@ -170,9 +170,6 @@ public class PlayerShip extends Characters {
         }
     }
 
-
-
-
     //---------movements---------
     public void moveLeft(){
         isMoveLeft=true;

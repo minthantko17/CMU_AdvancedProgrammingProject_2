@@ -13,6 +13,8 @@ public class Boss extends EnemyShips{
     int movementDirectionAngle;
     int targetDirectionAngle;
     public int bossHP;
+    double initSpeed;
+    int bossBulletSpeed;
 
     public Boss(Image image, double startX, double startY, double speed, PlayerShip playerShip) {
         super(image, startX, startY, speed, playerShip);
@@ -53,6 +55,9 @@ public class Boss extends EnemyShips{
         this.playerShip=playerShip;
 
         enemyLastShotTime=0;
+
+        this.initSpeed=speed;
+        bossBulletSpeed=10;
     }
 
     @Override
@@ -85,7 +90,7 @@ public class Boss extends EnemyShips{
         double shipX=this.getImageView().getBoundsInParent().getMinX()+this.getImageView().getBoundsInParent().getWidth() /2;
         double shipY=this.getImageView().getBoundsInParent().getMinY()+this.getImageView().getBoundsInParent().getHeight();
         Image bulletImage=new Image(Launcher.class.getResourceAsStream("assets/laserBlue.png"));
-        double bulletSpeed=10;
+        double bulletSpeed=bossBulletSpeed;
 
         List<Bullet> bullets=new ArrayList<Bullet>();
 
@@ -126,5 +131,18 @@ public class Boss extends EnemyShips{
     }
     public double getCurY() {
         return curY;
+    }
+
+    public void setSpeed(double speed){
+        this.speed=speed;
+    }
+    public void setBackInitSpeed(){
+        this.speed=initSpeed;
+    }
+    public void setBossBulletSpeed(int bulletSpeed){
+        bossBulletSpeed=bulletSpeed;
+    };
+    public void setBackInitBulletSpeed(){
+        this.bossBulletSpeed=10;
     }
 }

@@ -14,12 +14,12 @@ import java.util.List;
 public class GameLoop extends AnimationTimer {
     private GameStage gameStage;
     private PlayerShip playerShip;
-    private Boss bossShip;
+    Boss bossShip;
     private List<Bullet> playerBullets;
     private List<Bullet> playerSpecialBullets;
-    private List<Bullet> enemyBullets;
-    private List<Bullet> bossBullets;
-    private List<Asteroids> asteroids;
+    List<Bullet> enemyBullets;
+    List<Bullet> bossBullets;
+    List<Asteroids> asteroids;
     private List<Asteroids> newAsteroids;
     List<EnemyShips> enemyShips;
     private int enemyShipType;

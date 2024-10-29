@@ -10,6 +10,7 @@ public class SmallEnemyShip extends EnemyShips{
     double targetX, targetY;
     double curX, curY;
     boolean isFollowing;
+    double initSpeed;
 
     public SmallEnemyShip(Image image, double startX, double startY, double speed, PlayerShip playerShip) {
         super(image, startX, startY, speed, playerShip);
@@ -37,7 +38,7 @@ public class SmallEnemyShip extends EnemyShips{
         curY=startY;
 
         initTime=System.currentTimeMillis();
-        changeDirTime=2500;
+        changeDirTime=500;
         this.targetX=playerShip.getCurrX();
         this.targetY=playerShip.getCurrY();
         this.directionAngle = (int)Math.toDegrees(Math.atan2(this.targetY-startY, this.targetX-startX));
@@ -45,6 +46,7 @@ public class SmallEnemyShip extends EnemyShips{
         this.imageView.setPreserveRatio(true);
         this.imageView.setFitWidth(size);
         this.imageView.setRotate(directionAngle-90);
+        initSpeed=speed;
         this.speed=speed;
         this.playerShip=playerShip;
         isFollowing=false;
@@ -52,10 +54,6 @@ public class SmallEnemyShip extends EnemyShips{
 
     public void setDirectionAngle(int directionAngle){
         this.directionAngle=directionAngle;
-    }
-
-    public void setSpeed(double speed){
-        this.speed=speed;
     }
 
     public void isFollowing(){
@@ -78,7 +76,7 @@ public class SmallEnemyShip extends EnemyShips{
         //to follow continuously or with tick time, use alternative if condition below
         if((System.currentTimeMillis()-initTime) > changeDirTime){
 //        if(isFollowing){
-            this.speed=2.7;
+//            this.speed=2.7;
             this.targetX=playerShip.getCurrX();
             this.targetY=playerShip.getCurrY();
             this.directionAngle=(int)Math.toDegrees(Math.atan2(targetY-curY, targetX-curX));
@@ -104,7 +102,7 @@ public class SmallEnemyShip extends EnemyShips{
         //to follow continuously or with tick time, use alternative if condition below
         if((System.currentTimeMillis()-initTime) > changeDirTime){
 //        if(isFollowing){
-            this.speed=2.7;
+//            this.speed=2.7;
             this.targetX=playerShip.getCurrX();
             this.targetY=playerShip.getCurrY();
             this.directionAngle=(int)Math.toDegrees(Math.atan2(targetY-curY, targetX-curX));
@@ -132,5 +130,12 @@ public class SmallEnemyShip extends EnemyShips{
         if(imageView.getY()>Launcher.HEIGHT){
             imageView.setY(0);
         }
+    }
+
+    public void setSpeed(double speed){
+        this.speed=speed;
+    }
+    public void setBackInitSpeed(){
+        this.speed=initSpeed;
     }
 }

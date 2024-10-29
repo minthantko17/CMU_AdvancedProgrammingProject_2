@@ -9,6 +9,7 @@ public class Bullet extends Characters{
     private final ImageView imageView;
     private final double bulletMovementDirectionAngle;
     private double speed=5;
+    double initSpeed;
 
     public Bullet(Characters ship, Image image, double startX, double startY, double bulletMovementDirectionAngle, double bulletDisplayAngle, double speed){
         this.ship =ship;
@@ -18,6 +19,7 @@ public class Bullet extends Characters{
         imageView.setX(startX);
         imageView.setY(startY);
         this.bulletMovementDirectionAngle = bulletMovementDirectionAngle;
+        this.initSpeed = speed;
         this.speed=speed;
         imageView.setRotate(bulletDisplayAngle);
     }
@@ -41,4 +43,10 @@ public class Bullet extends Characters{
         return ship;
     }
 
+    public void setSpeed(double speed){
+        this.speed=speed;
+    }
+    public void setBackInitSpeed(){
+        this.speed=initSpeed;
+    }
 }
