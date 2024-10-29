@@ -89,20 +89,17 @@ public class GameController {
             if(e.getButton()==MouseButton.PRIMARY && !playerShip.isDestroyed() && GameStage.specialEnergy>=30){
                 GameStage.specialEnergy=0;
 
+                if (Launcher.choosenShip==2) {
 
-                if (Launcher.choosenShip==2) {          // Need to update special att for ship2
-                    shotsFired = 0;
-
+                    //chargeUp
                     AnimatedSprite chargeUp=new AnimatedSprite(
                             new Image(Launcher.class.getResourceAsStream("assets/charge.png")),
                             100, 100, 4, 25);
-
                     chargeUp.setX(playerShip.getImageView().getX()-25);
                     chargeUp.setY(playerShip.getImageView().getY()-25);
                     chargeUp.setPreserveRatio(true);
                     chargeUp.setFitWidth(100);
                     gameStage.getChildren().add(chargeUp);
-
                     Timeline chargeUpTimeLine=new Timeline(new KeyFrame(Duration.millis(25),
                             event -> chargeUp.update(System.nanoTime())));
                     chargeUpTimeLine.setCycleCount(4);
@@ -111,6 +108,7 @@ public class GameController {
                     });
                     chargeUpTimeLine.play();
 
+                    //slow all objects
                     List<EnemyShips> enemyShipsTemp=gameLoop.enemyShips;
                     List<Asteroids> asteroidsTemp=gameLoop.asteroids;
                     List<Bullet> enemyBulletTemp=gameLoop.enemyBullets;
@@ -124,18 +122,12 @@ public class GameController {
                             ((SmallEnemyShip) enemyship).setSpeed(0.2);
                         }
                     }
-                    for(Asteroids asteroid : asteroidsTemp){
-                        asteroid.setSpeed(0.2);
-                    }
-                    for(Bullet bullet: enemyBulletTemp){
-                        bullet.setSpeed(0.3);
-                    }
+                    for(Asteroids asteroid : asteroidsTemp){ asteroid.setSpeed(0.2); }
+                    for(Bullet bullet: enemyBulletTemp){ bullet.setSpeed(0.3); }
                     if (bossBulletTemp!=null) {
-                        for (Bullet bullet : bossBulletTemp) {
-                            bullet.setSpeed(1);
-                        }
+                        for (Bullet bullet : bossBulletTemp) { bullet.setSpeed(1); }
                     }
-                    if (bossTemp!=null) {bossTemp.setSpeed(0.5);}
+                    if (bossTemp!=null) { bossTemp.setSpeed(0.5); }
 
                     timeline = new Timeline(new KeyFrame(Duration.seconds(3), new EventHandler<ActionEvent>() {
                         @Override
