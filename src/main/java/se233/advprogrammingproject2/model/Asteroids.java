@@ -11,7 +11,7 @@ import java.util.List;
 public class Asteroids extends Characters{
     private double rotationSpeed;
     private int size;
-    double initSpeed;
+    double initRotationSpeed;
 
     public Asteroids(GameStage gameStage,Image image, double startX, double startY, double speed, int directionAngle, double rotationSpeed, int size) {
         super(new ImageView(image), startX, startY, speed, directionAngle);
@@ -23,6 +23,7 @@ public class Asteroids extends Characters{
         this.imageView.setPreserveRatio(true);
         this.rotationSpeed = rotationSpeed;
         this.initSpeed = speed;
+        initRotationSpeed=rotationSpeed;
     }
 
     @Override
@@ -83,5 +84,12 @@ public class Asteroids extends Characters{
     public void setBackInitSpeed(){
         this.speed=initSpeed;
     }
+    public void setRotationSpeed(double rotationSpeed){
+        this.rotationSpeed=rotationSpeed;
+    }
+    public void setBackToInitRotationSpeed(){
+        this.rotationSpeed=initRotationSpeed;
+    }
+
 
 }

@@ -1,6 +1,8 @@
 package se233.advprogrammingproject2.View;
 
 import javafx.geometry.Pos;
+import javafx.scene.Cursor;
+import javafx.scene.ImageCursor;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -15,6 +17,11 @@ public class GameEnd extends Pane {
     private Label gameEndLabel;
     private Label scoreLabel;
     public GameEnd() {
+
+        Image cursorImage=new Image(Launcher.class.getResourceAsStream("assets/redTarget.png"));
+        Cursor cursor=new ImageCursor(cursorImage, cursorImage.getWidth()/2, cursorImage.getHeight()/2);
+        this.setCursor(cursor);
+
         gameEndLabel = new Label();
         scoreLabel = new Label();
 

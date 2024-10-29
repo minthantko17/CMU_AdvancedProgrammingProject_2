@@ -79,48 +79,6 @@ public class PlayerShip extends Characters {
         isMoving=false;
     }
 
-    public void update(){
-        if (isInvincible()) {
-            long elapsedTime = System.currentTimeMillis() - invincibleStartTime;
-            imageView.setVisible(elapsedTime / 200 % 2 != 0);
-        } else {
-            imageView.setVisible(true);
-        }
-
-        if(isDestroyed){
-            return;
-        }
-
-        boolean leftPressed= gameStage.getKeys().isPressed(this.leftKey);
-        boolean rightPressed= gameStage.getKeys().isPressed(this.rightKey);
-        boolean topPressed= gameStage.getKeys().isPressed(this.topKey);
-        boolean bottomPressed= gameStage.getKeys().isPressed(this.bottomKey);
-
-        if(leftPressed && rightPressed){
-            this.stopHorizontal();
-        }else if(leftPressed){
-            this.moveLeft();
-            this.moveHorizontal();
-        }else if(rightPressed){
-            this.moveRight();
-            this.moveHorizontal();
-        }else{
-            this.stopHorizontal();
-        }
-
-        if(topPressed && bottomPressed){
-            this.stopVertical();
-        }else if(topPressed){
-            this.moveTop();
-            this.moveVertical();
-        }else if(bottomPressed){
-            this.moveBottom();
-            this.moveVertical();
-        }else{
-            this.stopVertical();
-        }
-    }
-
     public void update(long now){
         if (isInvincible()) {
             long elapsedTime = System.currentTimeMillis() - invincibleStartTime;
@@ -223,7 +181,7 @@ public class PlayerShip extends Characters {
     //--------------------------
     public Bullet shootBullet(){
         double shipX=this.getImageView().getBoundsInParent().getMinX()+this.getImageView().getBoundsInParent().getWidth() /2;
-        double shipY=this.getImageView().getBoundsInParent().getMinY()+this.getImageView().getBoundsInParent().getWidth() /2;
+        double shipY=this.getImageView().getBoundsInParent().getMinY()+this.getImageView().getBoundsInParent().getHeight() /2;
         double shipDirection=this.getImageView().getRotate()-90;     // adjust like +- 90 according to the input image
         double shipLastDirectedAngle= this.getImageView().getRotate();
 
@@ -312,4 +270,63 @@ public class PlayerShip extends Characters {
         return isMoving;
     }
 
+    public boolean isMoveBottom() {
+        return isMoveBottom;
+    }
+
+    public boolean isMoveTop() {
+        return isMoveTop;
+    }
+
+    public boolean isMoveLeft() {
+        return isMoveLeft;
+    }
+
+    public boolean isMoveRight() {
+        return isMoveRight;
+    }
+
+    public void setInvincible(boolean invincible) {
+        isInvincible = invincible;
+    }
+
+    public void setInvincibleStartTime(long invincibleStartTime) {
+        this.invincibleStartTime = invincibleStartTime;
+    }
+
+    public void setInvincibleDuration(long invincibleDuration) {
+        this.invincibleDuration = invincibleDuration;
+    }
+
+    public KeyCode getTopKey() {
+        return topKey;
+    }
+
+    public KeyCode getRightKey() {
+        return rightKey;
+    }
+
+    public KeyCode getBottomKey() {
+        return bottomKey;
+    }
+
+    public KeyCode getLeftKey() {
+        return leftKey;
+    }
+
+    public void setDestroyed(boolean destroyed) {
+        isDestroyed = destroyed;
+    }
+
+    public long getInvincibleDuration() {
+        return invincibleDuration;
+    }
+
+    public void setCurrX(double currX) {
+        this.currX = currX;
+    }
+
+    public void setCurrY(double currY) {
+        this.currY = currY;
+    }
 }

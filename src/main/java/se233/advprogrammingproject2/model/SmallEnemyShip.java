@@ -5,12 +5,11 @@ import se233.advprogrammingproject2.Launcher;
 import se233.advprogrammingproject2.util.AnimatedSprite;
 
 public class SmallEnemyShip extends EnemyShips{
-    long initTime;
+    public long initTime;
     long changeDirTime;
     double targetX, targetY;
     double curX, curY;
-    boolean isFollowing;
-    double initSpeed;
+    public boolean isFollowing;
 
     public SmallEnemyShip(Image image, double startX, double startY, double speed, PlayerShip playerShip) {
         super(image, startX, startY, speed, playerShip);
@@ -46,7 +45,7 @@ public class SmallEnemyShip extends EnemyShips{
         this.imageView.setPreserveRatio(true);
         this.imageView.setFitWidth(size);
         this.imageView.setRotate(directionAngle-90);
-        initSpeed=speed;
+        this.initSpeed=speed;
         this.speed=speed;
         this.playerShip=playerShip;
         isFollowing=false;
@@ -132,10 +131,5 @@ public class SmallEnemyShip extends EnemyShips{
         }
     }
 
-    public void setSpeed(double speed){
-        this.speed=speed;
-    }
-    public void setBackInitSpeed(){
-        this.speed=initSpeed;
-    }
+
 }

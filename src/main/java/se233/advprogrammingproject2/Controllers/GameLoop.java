@@ -1,13 +1,25 @@
 package se233.advprogrammingproject2.Controllers;
 
 import javafx.animation.AnimationTimer;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.geometry.Pos;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontPosture;
+import javafx.scene.text.FontWeight;
+import javafx.util.Duration;
 import se233.advprogrammingproject2.Launcher;
 import se233.advprogrammingproject2.model.*;
 import se233.advprogrammingproject2.View.GameStage;
 import se233.advprogrammingproject2.util.AnimatedSprite;
 
+import java.sql.Time;
 import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.List;
 
@@ -27,6 +39,9 @@ public class GameLoop extends AnimationTimer {
     private int asteroidRound;
     private boolean bossSpawn;
     private boolean bossDead;
+//    Timeline timelineCountdown;
+//    private boolean gameStart;
+//    public static int countDownNumber;
 //    private AnimatedSprite largeEnemySprite;
 
 
@@ -46,115 +61,162 @@ public class GameLoop extends AnimationTimer {
         spawnEnemyShips(enemyShipType);
         bossSpawn =false;
         bossDead=false;
+
+//        countDownNumber=3;
+//            Label countDownLbl=new Label(String.valueOf(countDownNumber));
+//            countDownLbl.setStyle("-fx-text-fill: white;");
+//            countDownLbl.setFont(Font.font("Arial", FontWeight.BOLD, FontPosture.ITALIC, 100));
+//            countDownLbl.setAlignment(Pos.CENTER);
+//            countDownLbl.setLayoutX(350);
+//            countDownLbl.setLayoutY(250);
+//            gameStage.getChildren().add(countDownLbl);
+//
+//            timelineCountdown=new Timeline(new KeyFrame(Duration.seconds(1),event -> {
+//                if (countDownNumber>0) {
+//                    countDownNumber--;
+//                    countDownLbl.setText(String.valueOf(countDownNumber));
+//                }else{
+//                    spawnAsteroids(120);
+//                    spawnEnemyShips(enemyShipType);
+//                    timelineCountdown.stop();
+//                }
+//            }));
+//            timelineCountdown.setOnFinished(e->{
+//                gameStage.getChildren().remove(countDownLbl);
+//            });
+//            timelineCountdown.setCycleCount(Timeline.INDEFINITE);
+//            timelineCountdown.play();
     }
 
     //------Main game loop handle-----
     @Override
     public void handle(long now) {
-        if(!Launcher.isGameOver && !Launcher.isVictory){
-            gameStage.updateScoreLabel(GameStage.score);
-            gameStage.updateSpecialEnergyLabel(GameStage.specialEnergy);
+        try {
+            if(!Launcher.isGameOver && !Launcher.isVictory){
+                gameStage.updateScoreLabel(GameStage.score);
+                gameStage.updateSpecialEnergyLabel(GameStage.specialEnergy);
 
-            updateAndCollidePlayerBullet();
-            updateAndCollidePlayerSpecialAttack();
-            updateAndCollidePlayerShip(now);
-            for (Asteroids asteroid : asteroids) {
-                asteroid.update();
-            }
-            for (EnemyShips e: enemyShips){
-                if(e instanceof LargeEnemyShip){
-                    ((LargeEnemyShip) e).update(now);
-                }else if(e instanceof SmallEnemyShip){
-                    ((SmallEnemyShip) e).update(now);
-                }else{
-                    e.update();
+                updateAndCollidePlayerBullet();
+                updateAndCollidePlayerSpecialAttack();
+                updateAndCollidePlayerShip(now);
+                for (Asteroids asteroid : asteroids) {
+                    asteroid.update();
                 }
-
-            }
-
-            //Spawn again
-            if(asteroids.isEmpty() && asteroidRound<1){
-                asteroidRound++;
-                spawnAsteroids(120);
-            }
-            if(enemyShips.isEmpty() && enemyRound<4){
-                if(enemyShipType==0){
-                    enemyShipType=1;
-                    spawnEnemyShips(enemyShipType);
-                }else{
-                    enemyShipType=0;
-                    spawnEnemyShips(enemyShipType);
-                }
-                enemyRound++;
-            }
-
-            //largeEnemy shoot with interval
-            if(enemyShipType==1 && !enemyShips.isEmpty()){
-                for(EnemyShips e: enemyShips){
+                for (EnemyShips e: enemyShips){
                     if(e instanceof LargeEnemyShip){
-                        if(((LargeEnemyShip) e).canShoot(now/1000000, 3000)){
-                            addAndShootEnemyBullet((LargeEnemyShip) e);
+                        ((LargeEnemyShip) e).update(now);
+                    }else if(e instanceof SmallEnemyShip){
+                        ((SmallEnemyShip) e).update(now);
+                    }else{
+                        e.update();
+                    }
+
+                }
+
+                //Spawn again
+                if(asteroids.isEmpty() && asteroidRound<1){
+                    asteroidRound++;
+                    spawnAsteroids(120);
+                }
+                if(enemyShips.isEmpty() && enemyRound<4){
+                    if(enemyShipType==0){
+                        enemyShipType=1;
+                        spawnEnemyShips(enemyShipType);
+                    }else{
+                        enemyShipType=0;
+                        spawnEnemyShips(enemyShipType);
+                    }
+                    enemyRound++;
+                }
+
+                //largeEnemy shoot with interval
+                if(enemyShipType==1 && !enemyShips.isEmpty()){
+                    for(EnemyShips e: enemyShips){
+                        if(e instanceof LargeEnemyShip){
+                            if(((LargeEnemyShip) e).canShoot(now/1000000, 3000)){
+                                addAndShootEnemyBullet((LargeEnemyShip) e);
+                            }
                         }
                     }
                 }
-            }
-            updateEnemyBullets();
+                updateEnemyBullets();
 
-            //Final Boss
-            if(enemyShips.isEmpty() && asteroids.isEmpty() && !bossSpawn){
-                bossSpawn =true;
-                spawnBoss();
-                GameStage.bossHpLabel.setVisible(true);
-                GameStage.bossHpLabel.setText("Boss HP: "+bossShip.getBossHP());
-//                Launcher.isVictory=true;
-//                OtherHandlers.gameEndScreen(this);
-            }
-            if(bossShip!=null){
-                if(bossShip.getCurY()<40){
-                    bossShip.bossComing();
-                }else{
-                    GameStage.bossHpBarBorder.setVisible(true);
-                    GameStage.bossHpBar.setVisible(true);
-                    GameStage.bossHpBar.setWidth(bossShip.getBossHP()*4);
-                    bossShip.update(now);
-                    if(bossShip.canShoot(now/1000000, 2000)){
-                        addAndShootBossBullet();
+                //Final Boss
+                if(enemyShips.isEmpty() && asteroids.isEmpty() && !bossSpawn){
+                    bossSpawn =true;
+                    spawnBoss();
+                    GameStage.bossHpLabel.setVisible(true);
+                    GameStage.bossHpLabel.setText("Boss HP: "+bossShip.getBossHP());
+                }
+                if(bossShip!=null){
+                    if(bossShip.getCurY()<40){
+                        bossShip.bossComing();
+                    }else{
+                        GameStage.bossHpBarBorder.setVisible(true);
+                        GameStage.bossHpBar.setVisible(true);
+                        GameStage.bossHpBar.setWidth(bossShip.getBossHP()*4);
+                        bossShip.update(now);
+                        if(bossShip.canShoot(now/1000000, 2000)){
+                            addAndShootBossBullet();
+                        }
+                        updateBossBullets();
                     }
-                    updateBossBullets();
+                }
+
+                //Game Victory and End
+                if(enemyShips.isEmpty() && asteroids.isEmpty() && bossDead){
+                    Launcher.isVictory=true;
+                    for(Bullet b: bossBullets){
+                        gameStage.getChildren().remove(b.getImageView());
+                    }
+                    gameStage.getChildren().remove(bossShip.getImageView());
+                    Timeline timeline=new Timeline(new KeyFrame(Duration.seconds(2), new EventHandler<ActionEvent>() {
+                        @Override
+                        public void handle(ActionEvent event) {
+                            System.out.println("wait 2 sec");
+                        }
+                    }));
+                    timeline.setOnFinished(e->OtherHandlers.changeToGameEndScreen(this));
+                    timeline.play();
                 }
             }
-
-            //Game Victory and End
-            if(enemyShips.isEmpty() && asteroids.isEmpty() && bossDead){
-                Launcher.isVictory=true;
-                OtherHandlers.changeToGameEndScreen(this);
-            }
+        } catch (ConcurrentModificationException e) {
+            System.err.println("ConcurrentModificationException occurred.");
+            OtherHandlers.changeToMainMenu();
+        } catch (NullPointerException e) {
+            System.err.println("NullPointerException");
+            handle(now);
+        } catch (IllegalArgumentException e) {
+            System.err.println("IllegalArgumentException");
+        } catch (IllegalStateException e) {
+            System.err.println("IllegalStateException");
+            handle(now);
         }
     }
 
 
     // ------ADDING TO GAME STAGE------
-    public void addPlayerBullet(Bullet bullet) {
+    public void addPlayerBullet(Bullet bullet) throws NullPointerException, IllegalStateException {
         playerBullets.add(bullet);
         System.out.println("bullet added"+ playerBullets.size());
         gameStage.getChildren().addAll(bullet.getImageView());
         System.out.println("bullet added to GS"+ gameStage.getChildren().size());
     }
 
-    public void addPlayerSpecialBullet(List<Bullet> specialBullets) {
+    public void addPlayerSpecialBullet(List<Bullet> specialBullets) throws NullPointerException, IllegalStateException {
         playerSpecialBullets.addAll(specialBullets);
         for(Bullet bullet : specialBullets){
             gameStage.getChildren().addAll(bullet.getImageView());
         }
     }
 
-    public void addAndShootEnemyBullet(LargeEnemyShip enemyShip) {
+    public void addAndShootEnemyBullet(LargeEnemyShip enemyShip) throws NullPointerException, IllegalStateException {
         Bullet bullet = enemyShip.shootBullet();
         enemyBullets.add(bullet);
         gameStage.getChildren().addAll(bullet.getImageView());
     }
 
-    public void addAndShootBossBullet(){
+    public void addAndShootBossBullet() throws NullPointerException, IllegalStateException{
         List<Bullet> newBullets = bossShip.shootBullet();
         for(Bullet bullet : newBullets){
             bossBullets.add(bullet);
@@ -162,7 +224,7 @@ public class GameLoop extends AnimationTimer {
         }
     }
 
-    public void spawnAsteroids(int size){
+    public void spawnAsteroids(int size) throws NullPointerException, IllegalStateException{
         for (int i = 0; i < 6; i++) {
             double startX;
             double startY;
@@ -195,7 +257,7 @@ public class GameLoop extends AnimationTimer {
         }
     }
 
-    public void spawnEnemyShips(int enemyShipType){
+    public void spawnEnemyShips(int enemyShipType) throws NullPointerException, IllegalStateException{
         if (enemyShipType==0) {
             for (int i=0; i<5 ; i++){
                 double startX;
@@ -242,12 +304,9 @@ public class GameLoop extends AnimationTimer {
         }
     }
 
-    public void spawnBoss(){
+    public void spawnBoss() throws NullPointerException, IllegalStateException{
         double startX=(Launcher.WIDTH/2)-50;
         double startY=-50;
-//        Image bossShipImg=new Image(Launcher.class.getResourceAsStream("assets/ufoBoss.png"));
-//        bossShip = new Boss(bossShipImg, startX, startY, 3, playerShip);
-
         Image bossImage=new Image(Launcher.class.getResourceAsStream("assets/FinalBoss.png"));
         AnimatedSprite largeEnemySprite=new AnimatedSprite(bossImage, 512, 254, 3, 250);
         bossShip=new Boss(largeEnemySprite, startX, startY, 3, playerShip);
@@ -257,8 +316,9 @@ public class GameLoop extends AnimationTimer {
 
 
     // -------UPDATE CHARACTERS FOR LOOP + CHECK COLLOID----------
+
     // PlayerBullet
-    private void updateAndCollidePlayerBullet(){
+    private void updateAndCollidePlayerBullet() throws ConcurrentModificationException, NullPointerException, IllegalArgumentException{
         Iterator<Bullet> playerBulletIterator = playerBullets.iterator();
         while (playerBulletIterator.hasNext()) {
             boolean isBulletRemoved=false;
@@ -301,7 +361,7 @@ public class GameLoop extends AnimationTimer {
                     }
 
                     AnimatedSprite animatedSprite=new AnimatedSprite(
-                            new Image(Launcher.class.getResourceAsStream("assets/explosionTemp.png")),
+                            new Image(Launcher.class.getResourceAsStream("assets/explosionF.png")),
                             100, 100, 4, 25
                     );
                     gameStage.getChildren().remove(asteroid.getImageView());
@@ -346,7 +406,7 @@ public class GameLoop extends AnimationTimer {
                     }
 
                     AnimatedSprite animatedSprite=new AnimatedSprite(
-                            new Image(Launcher.class.getResourceAsStream("assets/explosionTemp.png")),
+                            new Image(Launcher.class.getResourceAsStream("assets/explosionF.png")),
                             100, 100, 4, 50
                     );
                     enemyShip.explode(animatedSprite, gameStage);
@@ -375,7 +435,7 @@ public class GameLoop extends AnimationTimer {
         }
     }
 
-    private void updateAndCollidePlayerSpecialAttack(){
+    private void updateAndCollidePlayerSpecialAttack()throws ConcurrentModificationException, NullPointerException, IllegalArgumentException{
         Iterator<Bullet> playerSpecialBulletIterator = playerSpecialBullets.iterator();
         while (playerSpecialBulletIterator.hasNext()) {
             boolean isBulletRemoved=false;
@@ -415,7 +475,7 @@ public class GameLoop extends AnimationTimer {
                         newAsteroids.addAll(smallerAsteroids);      //to avoid ConcurrentModificationException
                     }
                     AnimatedSprite animatedSprite=new AnimatedSprite(
-                            new Image(Launcher.class.getResourceAsStream("assets/explosionTemp.png")),
+                            new Image(Launcher.class.getResourceAsStream("assets/explosionF.png")),
                             100, 100, 4, 50
                     );
                     asteroid.explode(animatedSprite, gameStage);
@@ -443,7 +503,7 @@ public class GameLoop extends AnimationTimer {
                     }
 
                     AnimatedSprite animatedSprite=new AnimatedSprite(
-                            new Image(Launcher.class.getResourceAsStream("assets/explosionTemp.png")),
+                            new Image(Launcher.class.getResourceAsStream("assets/explosionF.png")),
                             100, 100, 4, 50
                     );
                     enemyShip.explode(animatedSprite, gameStage);
@@ -475,7 +535,7 @@ public class GameLoop extends AnimationTimer {
     }
 
     //PlayerShip
-    private void updateAndCollidePlayerShip(long now){
+    private void updateAndCollidePlayerShip(long now)throws ConcurrentModificationException, NullPointerException, IllegalArgumentException{
         playerShip.update(now);
         if(!playerShip.isDestroyed() && !playerShip.isInvincible()){
 
@@ -573,7 +633,7 @@ public class GameLoop extends AnimationTimer {
 
     }
 
-    private void updateEnemyBullets(){
+    private void updateEnemyBullets()throws ConcurrentModificationException, NullPointerException, IllegalArgumentException{
         Iterator<Bullet> enemyBulletIterator=enemyBullets.iterator();
         while (enemyBulletIterator.hasNext()){
             Bullet enemyBullet=enemyBulletIterator.next();
@@ -586,7 +646,7 @@ public class GameLoop extends AnimationTimer {
         }
     }
 
-    private void updateBossBullets(){
+    private void updateBossBullets()throws ConcurrentModificationException, NullPointerException, IllegalArgumentException{
         Iterator<Bullet> bossBulletIterator=bossBullets.iterator();
         while (bossBulletIterator.hasNext()){
             Bullet bossBullet=bossBulletIterator.next();

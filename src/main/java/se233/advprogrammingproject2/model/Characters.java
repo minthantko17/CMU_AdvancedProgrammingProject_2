@@ -18,6 +18,7 @@ public abstract class Characters extends ImageView {
     protected double speed;
     protected PlayerShip playerShip;
     protected boolean isExploding;
+    double initSpeed;
 
     protected Characters(){
         this.isExploding=false;
@@ -102,6 +103,13 @@ public abstract class Characters extends ImageView {
 
     public ImageView getImageView(){
         return imageView;
+    }
+
+    public void setSpeed(double speed){
+        this.speed=speed;
+    }
+    public void setBackInitSpeed(){
+        this.speed=initSpeed;
     }
 
     public boolean isExploding(){

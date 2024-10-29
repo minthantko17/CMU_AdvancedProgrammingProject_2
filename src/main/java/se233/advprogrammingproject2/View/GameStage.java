@@ -82,12 +82,12 @@ public class GameStage extends Pane {
         bossHpBar.setVisible(false);
 
         keys=new Keys();
-        playerShipImg=new Image(Launcher.class.getResourceAsStream("assets/playerShip1_red.png"));
+//        playerShipImg=new Image(Launcher.class.getResourceAsStream("assets/playerShip1_red.png"));
 //        playerShip=new PlayerShip( this, playerShipImg, Launcher.WIDTH/2 -25, Launcher.HEIGHT/2 -20, KeyCode.W, KeyCode.D, KeyCode.S, KeyCode.A, 5);
 
         if(Launcher.choosenShip==2){
             AnimatedSprite animatedSprite=new AnimatedSprite(
-                    new Image(Launcher.class.getResourceAsStream("assets/player.png")),
+                    new Image(Launcher.class.getResourceAsStream("assets/playerShip2.png")),
                     100, 100, 6, 150
             );
             playerShip=new PlayerShip(this, animatedSprite,

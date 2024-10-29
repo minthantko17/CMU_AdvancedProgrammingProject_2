@@ -86,129 +86,117 @@ public class GameController {
             }
 
             //special attack
-            if(e.getButton()==MouseButton.PRIMARY && !playerShip.isDestroyed() && GameStage.specialEnergy>=30){
+            if(e.getButton()==MouseButton.PRIMARY && !playerShip.isDestroyed()){
+                // && GameStage.specialEnergy>=30
                 GameStage.specialEnergy=0;
 
+                //FOR SHIP2
                 if (Launcher.choosenShip==2) {
-
                     //chargeUp
                     AnimatedSprite chargeUp=new AnimatedSprite(
-                            new Image(Launcher.class.getResourceAsStream("assets/charge.png")),
-                            100, 100, 4, 25);
-                    chargeUp.setX(playerShip.getImageView().getX()-25);
-                    chargeUp.setY(playerShip.getImageView().getY()-25);
+                            new Image(Launcher.class.getResourceAsStream("assets/blueCircle.png")),
+                            100, 100, 7, 50);
+                    chargeUp.setX(playerShip.getImageView().getX()-75);
+                    chargeUp.setY(playerShip.getImageView().getY()-75);
                     chargeUp.setPreserveRatio(true);
-                    chargeUp.setFitWidth(100);
+                    chargeUp.setFitWidth(200);
                     gameStage.getChildren().add(chargeUp);
-                    Timeline chargeUpTimeLine=new Timeline(new KeyFrame(Duration.millis(25),
-                            event -> chargeUp.update(System.nanoTime())));
-                    chargeUpTimeLine.setCycleCount(4);
+
+                    Timeline chargeUpTimeLine=new Timeline(new KeyFrame(Duration.millis(100),
+                            event -> {
+                                chargeUp.setX(playerShip.getImageView().getX()-75);
+                                chargeUp.setY(playerShip.getImageView().getY()-75);
+                                chargeUp.update(System.nanoTime());
+                            }));
+                    chargeUpTimeLine.setCycleCount(6);
+
                     chargeUpTimeLine.setOnFinished(event->{
                         gameStage.getChildren().remove(chargeUp);
+                        //slow all objects
+                        List<EnemyShips> enemyShipsTemp=gameLoop.enemyShips;
+                        List<Asteroids> asteroidsTemp=gameLoop.asteroids;
+                        List<Bullet> enemyBulletTemp=gameLoop.enemyBullets;
+                        List<Bullet> bossBulletTemp=gameLoop.bossBullets;
+                        Boss bossTemp=gameLoop.bossShip;
+
+                        for(EnemyShips enemyShip : enemyShipsTemp){ enemyShip.setSpeed(0.2); }
+                        for(Asteroids asteroid : asteroidsTemp){
+                            asteroid.setRotationSpeed(0.3);
+                            asteroid.setSpeed(0.2);
+                        }
+                        for(Bullet bullet: enemyBulletTemp){ bullet.setSpeed(0.3); }
+                        if (bossBulletTemp!=null) {
+                            for (Bullet bullet : bossBulletTemp) { bullet.setSpeed(1); }
+                        }
+                        if (bossTemp!=null) { bossTemp.setSpeed(0.5); }
+
+                        timeline = new Timeline(new KeyFrame(Duration.seconds(3), new EventHandler<ActionEvent>() {
+                            @Override
+                            public void handle(ActionEvent event) {
+                                System.out.println("wait 3 sec");
+                            }
+                        }));
+                        timeline.setCycleCount(1);
+                        timeline.setOnFinished(eventPower->{
+                            for(EnemyShips enemyShip : enemyShipsTemp){ enemyShip.setBackInitSpeed(); }
+                            for(Asteroids asteroid : asteroidsTemp){
+                                asteroid.setBackToInitRotationSpeed();
+                                asteroid.setBackInitSpeed();
+                            }
+                            for(Bullet bullet: enemyBulletTemp){ bullet.setBackInitSpeed(); }
+                            if (bossBulletTemp!=null) {
+                                for(Bullet bullet: bossBulletTemp){ bullet.setBackInitSpeed(); }
+                            }
+                            if(bossTemp!=null){ bossTemp.setBackInitSpeed(); }
+                        });
+                        timeline.play();
                     });
                     chargeUpTimeLine.play();
-
-                    //slow all objects
-                    List<EnemyShips> enemyShipsTemp=gameLoop.enemyShips;
-                    List<Asteroids> asteroidsTemp=gameLoop.asteroids;
-                    List<Bullet> enemyBulletTemp=gameLoop.enemyBullets;
-                    List<Bullet> bossBulletTemp=gameLoop.bossBullets;
-                    Boss bossTemp=gameLoop.bossShip;
-
-                    for(EnemyShips enemyship : enemyShipsTemp){
-                        if(enemyship instanceof LargeEnemyShip){
-                            ((LargeEnemyShip) enemyship).setSpeed(0.2);
-                        }else{
-                            ((SmallEnemyShip) enemyship).setSpeed(0.2);
-                        }
-                    }
-                    for(Asteroids asteroid : asteroidsTemp){ asteroid.setSpeed(0.2); }
-                    for(Bullet bullet: enemyBulletTemp){ bullet.setSpeed(0.3); }
-                    if (bossBulletTemp!=null) {
-                        for (Bullet bullet : bossBulletTemp) { bullet.setSpeed(1); }
-                    }
-                    if (bossTemp!=null) { bossTemp.setSpeed(0.5); }
-
-                    timeline = new Timeline(new KeyFrame(Duration.seconds(3), new EventHandler<ActionEvent>() {
-                        @Override
-                        public void handle(ActionEvent event) {
-                            System.out.println("in handle");
-                        }
-                    }));
-                    timeline.setCycleCount(1);
-                    timeline.setOnFinished(event->{
-                        for(EnemyShips enemyship : enemyShipsTemp){
-                            if(enemyship instanceof LargeEnemyShip){
-                                ((LargeEnemyShip) enemyship).setBackInitSpeed();
-                            }else{
-                                ((SmallEnemyShip) enemyship).setBackInitSpeed();
-                            }
-                        }
-                        for(Asteroids asteroid : asteroidsTemp){
-                            asteroid.setBackInitSpeed();
-                        }
-                        for(Bullet bullet: enemyBulletTemp){
-                            bullet.setBackInitSpeed();
-                        }
-                        if (bossBulletTemp!=null) {
-                            for(Bullet bullet: bossBulletTemp){
-                                bullet.setBackInitSpeed();
-                            }
-                        }
-                        if(bossTemp!=null){
-                            bossTemp.setBackInitSpeed();
-                        }
-
-                    });
-                    timeline.play();
                 }
 
-                else{
-                    System.out.println("here");
+                //for ship1
+                else{ //chosenShip==1
                     shotsFired = 0;
-
+                    //chargeUp
                     AnimatedSprite chargeUp=new AnimatedSprite(
-                            new Image(Launcher.class.getResourceAsStream("assets/charge.png")),
-                            100, 100, 4, 25);
-
-                    chargeUp.setX(playerShip.getImageView().getX()-25);
-                    chargeUp.setY(playerShip.getImageView().getY()-25);
+                            new Image(Launcher.class.getResourceAsStream("assets/chargeRed.png")),
+                            100, 100, 7, 15);
+                    chargeUp.setX(playerShip.getImageView().getX()-75);
+                    chargeUp.setY(playerShip.getImageView().getY()-75);
                     chargeUp.setPreserveRatio(true);
-                    chargeUp.setFitWidth(100);
+                    chargeUp.setFitWidth(200);
                     gameStage.getChildren().add(chargeUp);
-
-                    Timeline chargeUpTimeLine=new Timeline(new KeyFrame(Duration.millis(25),
+                    Timeline chargeUpTimeLine=new Timeline(new KeyFrame(Duration.millis(40),
                             event -> {
-                                chargeUp.setX(playerShip.getImageView().getX()-25);
-                                chargeUp.setY(playerShip.getImageView().getY()-25);
-                        chargeUp.update(System.nanoTime());
+                                chargeUp.setX(playerShip.getImageView().getX()-75);
+                                chargeUp.setY(playerShip.getImageView().getY()-75);
+                                chargeUp.update(System.nanoTime());
                             }));
-                    chargeUpTimeLine.setCycleCount(4);
+                    chargeUpTimeLine.setCycleCount(6);
+
                     chargeUpTimeLine.setOnFinished(event->{
                         gameStage.getChildren().remove(chargeUp);
+
+                        //fire 3 times
+                        timeline = new Timeline(new KeyFrame(Duration.seconds(0.5), new EventHandler<ActionEvent>() {
+                            @Override
+                            public void handle(ActionEvent event) {
+                                if (shotsFired < 3) {
+                                    List<Bullet> bullets = playerShip.shootSpecialAttack();
+                                    gameLoop.addPlayerSpecialBullet(bullets);
+                                    shotsFired++;
+                                } else {
+                                    shotsFired = 0;
+                                    timeline.stop();
+                                }
+                            }
+                        }));
+                        timeline.setCycleCount(3);
+                        timeline.play();
                     });
                     chargeUpTimeLine.play();
 
-                    //fire instantly
-//                List<Bullet> bullets=playerShip.shootSpecialAttack();
-//                gameLoop.addPlayerSpecialBullet(bullets);
 
-                    //fire 2 more times with 0.5sec interval
-                    timeline = new Timeline(new KeyFrame(Duration.seconds(0.5), new EventHandler<ActionEvent>() {
-                        @Override
-                        public void handle(ActionEvent event) {
-                            if (shotsFired < 3) {
-                                List<Bullet> bullets = playerShip.shootSpecialAttack();
-                                gameLoop.addPlayerSpecialBullet(bullets);
-                                shotsFired++;
-                            } else {
-                                shotsFired = 0;
-                                timeline.stop();
-                            }
-                        }
-                    }));
-                    timeline.setCycleCount(3);
-                    timeline.play();
                 }
             }
         });

@@ -28,4 +28,8 @@ public class EnemyShips extends Characters{
         }
         return false;
     }
+
+    public void setEnemyLastShotTime(long enemyLastShotTime) {
+        this.enemyLastShotTime = enemyLastShotTime;
+    }
 }

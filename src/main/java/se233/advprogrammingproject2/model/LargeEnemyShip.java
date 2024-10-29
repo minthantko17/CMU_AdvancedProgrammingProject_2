@@ -11,7 +11,6 @@ public class LargeEnemyShip extends EnemyShips{
     boolean isFollowing;
     int movementDirectionAngle;
     int targetDirectionAngle;
-    double initSpeed;
 //    AnimatedSprite animatedSprite;
 
     public LargeEnemyShip(Image image, double startX, double startY, double speed, PlayerShip playerShip) {
@@ -46,7 +45,7 @@ public class LargeEnemyShip extends EnemyShips{
         imageView.setPreserveRatio(true);
         imageView.setFitWidth(size);
 
-        initSpeed=speed;
+        this.initSpeed=speed;
         this.speed=speed;
         this.playerShip=playerShip;
         enemyLastShotTime=0;
@@ -88,14 +87,11 @@ public class LargeEnemyShip extends EnemyShips{
         return bullet;
     }
 
-    public void setSpeed(double speed){
-        this.speed=speed;
-    }
-    public void setBackInitSpeed(){
-        this.speed=initSpeed;
-    }
-
 //    public AnimatedSprite getAnimatedSprite(){
 //        return animatedSprite;
 //    }
+
+    public int getMovementDirectionAngle() {
+        return movementDirectionAngle;
+    }
 }

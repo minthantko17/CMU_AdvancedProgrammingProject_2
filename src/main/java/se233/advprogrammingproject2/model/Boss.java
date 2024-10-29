@@ -8,12 +8,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Boss extends EnemyShips{
+    public long eLastShotTime;
     double targetX, targetY;
     double curX, curY;
     int movementDirectionAngle;
     int targetDirectionAngle;
     public int bossHP;
-    double initSpeed;
     int bossBulletSpeed;
 
     public Boss(Image image, double startX, double startY, double speed, PlayerShip playerShip) {
@@ -133,12 +133,6 @@ public class Boss extends EnemyShips{
         return curY;
     }
 
-    public void setSpeed(double speed){
-        this.speed=speed;
-    }
-    public void setBackInitSpeed(){
-        this.speed=initSpeed;
-    }
     public void setBossBulletSpeed(int bulletSpeed){
         bossBulletSpeed=bulletSpeed;
     };
