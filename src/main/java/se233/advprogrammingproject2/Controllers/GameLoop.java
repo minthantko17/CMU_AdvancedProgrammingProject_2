@@ -286,7 +286,7 @@ public class GameLoop extends AnimationTimer {
 //                );
                 Image smallEnamyImage=new Image(Launcher.class.getResourceAsStream("assets/SmallEnemy.png"));
                 AnimatedSprite smallEnemySprite=new AnimatedSprite(smallEnamyImage, 520, 520, 4, 250);
-                EnemyShips smallEnemyShips=new SmallEnemyShip(smallEnemySprite, startX, startY, 1.5, playerShip);
+                EnemyShips smallEnemyShips=new SmallEnemyShip(smallEnemySprite, startX, startY, 2, playerShip);
 
                 enemyShips.add(smallEnemyShips);
                 gameStage.getChildren().add(smallEnemyShips.getImageView());
@@ -580,7 +580,7 @@ public class GameLoop extends AnimationTimer {
                 if(playerShip.checkCollision(asteroid)){
                     PlayerShip.logger.info("PlayerShip collided with asteroid");
                     AnimatedSprite animatedSprite=new AnimatedSprite(
-                            new Image(Launcher.class.getResourceAsStream("assets/explosionTemp.png")),
+                            new Image(Launcher.class.getResourceAsStream("assets/explosionF.png")),
                             100, 100, 4, 50
                     );
                     playerShip.explode(animatedSprite, gameStage);
@@ -600,7 +600,7 @@ public class GameLoop extends AnimationTimer {
                     enemyShipsIterator.remove();
 
                     AnimatedSprite animatedSprite=new AnimatedSprite(
-                            new Image(Launcher.class.getResourceAsStream("assets/explosionTemp.png")),
+                            new Image(Launcher.class.getResourceAsStream("assets/explosionF.png")),
                             100, 100, 4, 50
                     );
                     playerShip.explode(animatedSprite, gameStage);
@@ -620,7 +620,7 @@ public class GameLoop extends AnimationTimer {
                     enemyBulletsIterator.remove();
 
                     AnimatedSprite animatedSprite=new AnimatedSprite(
-                            new Image(Launcher.class.getResourceAsStream("assets/explosionTemp.png")),
+                            new Image(Launcher.class.getResourceAsStream("assets/explosionF.png")),
                             100, 100, 4, 50
                     );
                     playerShip.explode(animatedSprite, gameStage);
@@ -634,7 +634,11 @@ public class GameLoop extends AnimationTimer {
             if(bossShip!=null){
                 if(playerShip.checkCollision(bossShip)){
                     PlayerShip.logger.info("PlayerShip collided with boss ship");
-                    playerShip.explode();
+                    AnimatedSprite animatedSprite=new AnimatedSprite(
+                            new Image(Launcher.class.getResourceAsStream("assets/explosionF.png")),
+                            100, 100, 4, 50
+                    );
+                    playerShip.explode(animatedSprite, gameStage);
                     playerShip.destroy();
                     gameStage.getChildren().remove(playerShip.getImageView());
                 }
@@ -647,7 +651,11 @@ public class GameLoop extends AnimationTimer {
                         gameStage.getChildren().remove(bossBullet.getImageView());
                         bossBulletsIterator.remove();
 
-                        playerShip.explode();
+                        AnimatedSprite animatedSprite=new AnimatedSprite(
+                                new Image(Launcher.class.getResourceAsStream("assets/explosionF.png")),
+                                100, 100, 4, 50
+                        );
+                        playerShip.explode(animatedSprite, gameStage);
                         playerShip.destroy();
                         gameStage.getChildren().remove(playerShip.getImageView());
                         break;
