@@ -2,6 +2,17 @@
 
 A JavaFX-based Asteroids-style arcade shooter. Pilot your ship, blast asteroids and enemy ships, dodge a boss, and rack up score.
 
+---
+
+## Gameplay Demo
+
+
+https://github.com/user-attachments/assets/f7faa331-53c0-48da-bcdb-5f2dfc0b12ce
+
+
+
+---
+
 ## Features
 
 - Main menu, ship/loadout selection (game prep), gameplay, and game-over screens
