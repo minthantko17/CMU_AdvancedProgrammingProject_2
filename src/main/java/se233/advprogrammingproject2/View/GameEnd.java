@@ -18,7 +18,7 @@ public class GameEnd extends Pane {
     private Label scoreLabel;
     public GameEnd() {
 
-        Image cursorImage=new Image(Launcher.class.getResourceAsStream("assets/redTarget.png"));
+        Image cursorImage=new Image(Launcher.class.getResourceAsStream("assets/redTarget.png"), 48, 48, true, true);
         Cursor cursor=new ImageCursor(cursorImage, cursorImage.getWidth()/2, cursorImage.getHeight()/2);
         this.setCursor(cursor);
 
