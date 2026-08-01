@@ -10,6 +10,11 @@ A JavaFX-based Asteroids-style arcade shooter. Pilot your ship, blast asteroids 
 https://github.com/user-attachments/assets/f7faa331-53c0-48da-bcdb-5f2dfc0b12ce
 
 
+## Screenshots
+<img width="612" height="486" alt="astroid_game_ss1" src="https://github.com/user-attachments/assets/4ff83d40-319b-46b5-ac87-1317cc45db8b" />
+<img width="612" height="486" alt="astroid_game_ss3" src="https://github.com/user-attachments/assets/d49cc7cc-3111-426c-b654-93daefeba950" />
+<img width="612" height="486" alt="astroid_game_ss2" src="https://github.com/user-attachments/assets/9a207200-1cb3-46f3-b770-05df9c1e49d1" />
+
 
 ---
 
