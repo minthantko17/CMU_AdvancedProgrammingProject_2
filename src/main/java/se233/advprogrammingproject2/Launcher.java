@@ -20,7 +20,7 @@ public class Launcher extends Application {
 
     public void start(Stage stage) {
         primaryStage=stage;
-        Image cursorImage=new Image(Launcher.class.getResourceAsStream("assets/redTarget.png"));
+        Image cursorImage=new Image(Launcher.class.getResourceAsStream("assets/redTarget.png"), 48, 48, true, true);
         Cursor cursor=new ImageCursor(cursorImage, cursorImage.getWidth()/2, cursorImage.getHeight()/2);
 
         MainMenu mainMenu = new MainMenu();
